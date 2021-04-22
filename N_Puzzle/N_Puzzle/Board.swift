@@ -12,6 +12,7 @@ struct Board {
     var matrix: [[Int]]
     var zero: (Int, Int)
     
+    // MARK: Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int]]) throws {
         self.size = size
         self.matrix = matrix
@@ -19,7 +20,7 @@ struct Board {
         try checkBoard()
     }
     
-    // Создание доски-решения.
+    // MARK: Создание доски-решения.
     init(size: Int) {
         self.size = size
         self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
@@ -84,17 +85,6 @@ struct Board {
         self.zero = (x, y)
     }
     
-    // MARK: Печатает доску.
-    func print() {
-        for row in matrix {
-            var line = String()
-            for col in row {
-                line.append(String(format: "%02d ", col))
-            }
-            Swift.print(line)
-        }
-    }
-    
     // MARK: Производит проверку доски. Элементы должны быть уникальны.
     private mutating func checkBoard() throws {
         let elements = Set<Int>(0...(self.size * self.size - 1))
@@ -112,5 +102,27 @@ struct Board {
         if elements != elementsBoard {
             throw Exception(massage: "Incorrect numbers on the board.")
         }
+    }
+    
+    // MARK: Печатает доску.
+    func print() {
+        for row in matrix {
+            var line = String()
+            for col in row {
+                line.append(String(format: "%02d ", col))
+            }
+            Swift.print(line)
+        }
+    }
+    
+    // MARK: Возврат словаря с координатами ячеек. Используется с для матрицы содержащей ответ.
+    func getCoordinats() -> [Int: (Int, Int)] {
+        var coordinats = [Int: (Int, Int)]()
+        for (i, row) in self.matrix.enumerated() {
+            for (j, element) in row.enumerated() {
+                coordinats[element] = (i, j)
+            }
+        }
+        return coordinats
     }
 }

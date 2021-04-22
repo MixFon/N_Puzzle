@@ -11,6 +11,9 @@ class Pazzle {
     
     var fileName: String?
     var heuristic: Heuristic?
+    var coordinats: [Int: (Int, Int)]?
+    var boardTarget: Board?
+    var board: Board?
     
     func run() {
         do {
@@ -53,13 +56,12 @@ class Pazzle {
             throw Exception(massage: "The board size is set incorrectly.")
         }
         let board = try Board(size: sizeBoard, matrix: arr)
-        board.print()
-        print(board.zero)
-        for i in 1...10 {
-            let board = Board(size: i)
-            board.print()
-            print(board.zero)
-        }
+        let boardTarget = Board(size: board.size)
+        self.coordinats = boardTarget.getCoordinats()
+        self.board = board
+        self.boardTarget = boardTarget
+        self.boardTarget?.print()
+        print(self.coordinats!)
     }
     
     // Создает на основе строки массив целочисленных элементов.
