@@ -10,22 +10,65 @@ import Foundation
 struct Board {
     var size: Int
     var matrix: [[Int]]
-    var zero: (Int, Int)
+    var coordinats = [Int: (Int, Int)]()
+    var f: Int
     
     // MARK: Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int]]) throws {
         self.size = size
         self.matrix = matrix
-        self.zero = (0, 0)
+        self.f = 0
         try checkBoard()
+        getCoordinats()
+    }
+    
+    // MARK: Конструктор копирования.
+    init(board: Board) {
+        self.size = board.size
+        self.matrix = board.matrix
+        self.f = board.f
+        self.coordinats = board.coordinats
     }
     
     // MARK: Создание доски-решения.
     init(size: Int) {
         self.size = size
         self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
-        self.zero = (0, 0)
+        self.f = 0
         fillBoard()
+        getCoordinats()
+    }
+    
+    // MARK: Устанавливает значение f
+    mutating func setF(cost: Int) {
+        self.f = cost
+    }
+    
+    // MARK: Возвращает координаты ячейки с номером.
+    func getCoordinatsNumber(number: Int) -> (Int, Int) {
+        guard let coordinats = self.coordinats[number] else { return (Int.max, Int.max) }
+        return coordinats
+    }
+    
+    // MARK: Возвращает номера соседних ячеек.
+    func getNeighbors(number: Int) -> [Int] {
+        var result = [Int]()
+        guard let coordinats = self.coordinats[number] else {
+            return []
+        }
+        if coordinats.1 - 1 >= 0 {
+            result.append(matrix[coordinats.0][coordinats.1 - 1])
+        }
+        if coordinats.0 - 1 >= 0 {
+            result.append(matrix[coordinats.0 - 1][coordinats.1])
+        }
+        if coordinats.1 + 1 < self.size {
+            result.append(matrix[coordinats.0][coordinats.1 + 1])
+        }
+        if coordinats.0 + 1 < self.size {
+            result.append(matrix[coordinats.0 + 1][coordinats.1])
+        }
+        return result
     }
     
     // MARK: Заполняет доску по спирали.
@@ -82,7 +125,6 @@ struct Board {
                 filler += 1
             }
         }
-        self.zero = (x, y)
     }
     
     // MARK: Производит проверку доски. Элементы должны быть уникальны.
@@ -90,12 +132,9 @@ struct Board {
         let elements = Set<Int>(0...(self.size * self.size - 1))
         var elementsBoard = Set<Int>()
         Swift.print(elements)
-        for (i, row) in matrix.enumerated() {
-            for (j, elem) in row.enumerated() {
+        for row in matrix {
+            for elem in row {
                 elementsBoard.insert(elem)
-                if elem == 0 {
-                    self.zero = (i, j)
-                }
             }
         }
         Swift.print(elementsBoard)
@@ -113,16 +152,42 @@ struct Board {
             }
             Swift.print(line)
         }
+        Swift.print()
     }
     
     // MARK: Возврат словаря с координатами ячеек. Используется с для матрицы содержащей ответ.
-    func getCoordinats() -> [Int: (Int, Int)] {
-        var coordinats = [Int: (Int, Int)]()
+    private mutating func getCoordinats() {
+        //var coordinats = [Int: (Int, Int)]()
         for (i, row) in self.matrix.enumerated() {
             for (j, element) in row.enumerated() {
-                coordinats[element] = (i, j)
+                //
+                self.coordinats[element] = (i, j)
             }
         }
-        return coordinats
+    }
+    
+    // MARK: Меняет местами номер и пустую клетку местами.
+    mutating func swapNumber(number: Int) {
+        let coordinatsNumber = getCoordinatsNumber(number: number)
+        let coordinatsZero = getCoordinatsNumber(number: 0)
+        self.matrix[coordinatsNumber.0][coordinatsNumber.1] = 0
+        self.matrix[coordinatsZero.0][coordinatsZero.1] = number
+        self.coordinats[number] = coordinatsZero
+        self.coordinats[0] = coordinatsNumber
+    }
+    
+    static func == (left: Board, right: Board) -> Bool {
+        for (rowL, rowR) in zip(left.matrix, right.matrix) {
+            for (elemL, elemR) in zip(rowL, rowR) {
+                if elemL != elemR {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+    
+    static func != (left: Board, right: Board) -> Bool {
+        return !(left == right)
     }
 }
