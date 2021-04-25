@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Board: Equatable {
+class Board: Equatable {
     var size: Int
     var matrix: [[Int]]
     var coordinats = [Int: (Int, Int)]()
@@ -41,11 +41,12 @@ struct Board: Equatable {
         self.matrix = board.matrix
         self.f = board.f
         self.g = board.g + 1
+        self.parent = board
         self.coordinats = board.coordinats
     }
     
     // MARK: Устанавливает значение f
-    mutating func setF(heuristic: Int) {
+    func setF(heuristic: Int) {
         self.f = self.g + heuristic
     }
     
@@ -77,7 +78,7 @@ struct Board: Equatable {
     }
     
     // MARK: Заполняет доску по спирали.
-    private mutating func fillBoard() {
+    private func fillBoard() {
         var filler = 1
         for i in 0..<self.size {
             self.matrix[0][i] = filler
@@ -103,7 +104,7 @@ struct Board: Equatable {
     }
     
     // MARK: Заполняет внутренюю часть квадрата.
-    private mutating func fillSquare(filler: Int) {
+    private func fillSquare(filler: Int) {
         var filler = filler
         let end = self.size * self.size
         var x = 1
@@ -133,7 +134,7 @@ struct Board: Equatable {
     }
     
     // MARK: Производит проверку доски. Элементы должны быть уникальны.
-    private mutating func checkBoard() throws {
+    private func checkBoard() throws {
         let elements = Set<Int>(0...(self.size * self.size - 1))
         var elementsBoard = Set<Int>()
         Swift.print(elements)
@@ -162,7 +163,7 @@ struct Board: Equatable {
     }
     
     // MARK: Возврат словаря с координатами ячеек. Используется с для матрицы содержащей ответ.
-    private mutating func getCoordinats() {
+    private func getCoordinats() {
         //var coordinats = [Int: (Int, Int)]()
         for (i, row) in self.matrix.enumerated() {
             for (j, element) in row.enumerated() {
@@ -173,7 +174,7 @@ struct Board: Equatable {
     }
     
     // MARK: Меняет местами номер и пустую клетку местами.
-    mutating func swapNumber(number: Int) {
+    func swapNumber(number: Int) {
         let coordinatsNumber = getCoordinatsNumber(number: number)
         let coordinatsZero = getCoordinatsNumber(number: 0)
         self.matrix[coordinatsNumber.0][coordinatsNumber.1] = 0
@@ -183,14 +184,7 @@ struct Board: Equatable {
     }
     
     static func == (left: Board, right: Board) -> Bool {
-        for (rowL, rowR) in zip(left.matrix, right.matrix) {
-            for (elemL, elemR) in zip(rowL, rowR) {
-                if elemL != elemR {
-                    return false
-                }
-            }
-        }
-        return true
+        return left.matrix == right.matrix
     }
     
     static func != (left: Board, right: Board) -> Bool {

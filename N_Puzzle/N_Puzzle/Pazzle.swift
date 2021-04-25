@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreFoundation
 
 class Pazzle {
     
@@ -39,15 +40,19 @@ class Pazzle {
 //        var queue = [Board]()
         var lavel = 0
         self.board!.setF(heuristic: getHeuristic(board: self.board!))
+        //var list = LinkedList()
+        //list.push(board: self.board!)
         self.open.append(self.board!)
         self.board?.print()
         while !self.open.isEmpty {
         //for _ in 0...2 {
+        //while !list.isEmpty() {
             let index = getPriorityBoard(boards:  self.open)
             let board =  self.open[index]
+            //let board =  list.pop()
             self.open.remove(at: index)
             if board == self.boardTarget! {
-                printPath()
+                printPath(board: board)
                 board.print()
                 print(lavel)
                 return
@@ -55,6 +60,9 @@ class Pazzle {
             let neighbors = board.getNeighbors(number: 0)
             let children = getChildrens(neighbors: neighbors, board: board)
             self.open += children
+//            for board in children {
+//                list.push(board: board)
+//            }
             self.close.append(board)
 //            for child in children {
 //                print(child.f)
@@ -69,13 +77,18 @@ class Pazzle {
         }
     }
     
-    private func printPath() {
-        while !self.close.isEmpty {
-            let index = getPriorityBoard(boards:  self.close)
-            let board =  self.close[index]
-            self.close.remove(at: index)
-            board.print()
+    private func printPath(board: Board) {
+        var next: Board? = board
+        while next != nil {
+            next?.print()
+            next = next?.parent
         }
+//        while !self.close.isEmpty {
+//            let index = getPriorityBoard(boards:  self.close)
+//            let board =  self.close[index]
+//            self.close.remove(at: index)
+//            board.print()
+//        }
     }
     
     // MARK: Возвращает список смежных состояний.
