@@ -13,6 +13,8 @@ class Pazzle {
     var heuristic: Heuristic?
     var boardTarget: Board?
     var board: Board?
+    var open = [Board]()
+    var close = [Board]()
     
     func run() {
         do {
@@ -34,22 +36,31 @@ class Pazzle {
     
     // MARK: Поиск решения используя алгоритм A*
     private func searchSolution() {
-        var queue = [Board]()
+//        var queue = [Board]()
         var lavel = 0
-        self.board!.setF(cost: getCost(cost: lavel) + getHeuristic(board: self.board!))
-        queue.append(self.board!)
+        self.board!.setF(heuristic: getHeuristic(board: self.board!))
+        self.open.append(self.board!)
         self.board?.print()
-        while !queue.isEmpty {
-            let index = getPriorityBoard(boards: queue)
-            let board = queue[index]
-            queue.remove(at: index)
+        while !self.open.isEmpty {
+        //for _ in 0...2 {
+            let index = getPriorityBoard(boards:  self.open)
+            let board =  self.open[index]
+            self.open.remove(at: index)
             if board == self.boardTarget! {
+                printPath()
+                board.print()
+                print(lavel)
                 return
             }
             let neighbors = board.getNeighbors(number: 0)
-            let children = getChildrens(neighbors: neighbors, lavel: lavel, board: board)
-            queue += children
-            board.print()
+            let children = getChildrens(neighbors: neighbors, board: board)
+            self.open += children
+            self.close.append(board)
+//            for child in children {
+//                print(child.f)
+//                child.print()
+//            }
+            //board.print()
             //print(neighbors)
             //let number = getSwapNumber(neighbors: neighbors)
             //swapNumber(number: number)
@@ -58,14 +69,25 @@ class Pazzle {
         }
     }
     
+    private func printPath() {
+        while !self.close.isEmpty {
+            let index = getPriorityBoard(boards:  self.close)
+            let board =  self.close[index]
+            self.close.remove(at: index)
+            board.print()
+        }
+    }
+    
     // MARK: Возвращает список смежных состояний.
-    private func getChildrens(neighbors: [Int], lavel: Int, board: Board) -> [Board] {
+    private func getChildrens(neighbors: [Int], board: Board) -> [Board] {
         var childrens = [Board]()
         for number in neighbors {
             var newBoard = Board(board: board)
             newBoard.swapNumber(number: number)
-            newBoard.setF(cost: getCost(cost: lavel) + getHeuristic(board: newBoard))
-            childrens.append(newBoard)
+            newBoard.setF(heuristic: getHeuristic(board: newBoard))
+            if !self.close.contains(newBoard) {
+                childrens.append(newBoard)
+            }
         }
         return childrens
     }
@@ -84,9 +106,16 @@ class Pazzle {
     }
     
     // MARK: Возвращает количество пройдейного пути.
-    private func getCost(cost: Int) -> Int {
-        return cost
-    }
+//    private func getCost(cost: Int) -> Int {
+//        return cost
+//    }
+    
+//    private func getCost(board: Board) -> Int {
+//        let numberCoordinats = board.getCoordinatsNumber(number: 0)
+//        let targetCoordinats = self.boardTarget!.getCoordinatsNumber(number: 0)
+//        let result = abs(numberCoordinats.0 - targetCoordinats.0) + abs(numberCoordinats.1 - targetCoordinats.1)
+//        return result
+//    }
     
     // MARK: Возвращает эвристику согласно установленному флагу.
     private func getHeuristic(board: Board) -> Int {

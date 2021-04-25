@@ -7,18 +7,31 @@
 
 import Foundation
 
-struct Board {
+struct Board: Equatable {
     var size: Int
     var matrix: [[Int]]
     var coordinats = [Int: (Int, Int)]()
     var f: Int
+    var g: Int
+    weak var parent: Board?
     
     // MARK: Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int]]) throws {
         self.size = size
         self.matrix = matrix
         self.f = 0
+        self.g = 0
         try checkBoard()
+        getCoordinats()
+    }
+    
+    // MARK: Создание доски-решения.
+    init(size: Int) {
+        self.size = size
+        self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
+        self.f = 0
+        self.g = 0
+        fillBoard()
         getCoordinats()
     }
     
@@ -27,21 +40,13 @@ struct Board {
         self.size = board.size
         self.matrix = board.matrix
         self.f = board.f
+        self.g = board.g + 1
         self.coordinats = board.coordinats
     }
     
-    // MARK: Создание доски-решения.
-    init(size: Int) {
-        self.size = size
-        self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
-        self.f = 0
-        fillBoard()
-        getCoordinats()
-    }
-    
     // MARK: Устанавливает значение f
-    mutating func setF(cost: Int) {
-        self.f = cost
+    mutating func setF(heuristic: Int) {
+        self.f = self.g + heuristic
     }
     
     // MARK: Возвращает координаты ячейки с номером.
@@ -145,6 +150,7 @@ struct Board {
     
     // MARK: Печатает доску.
     func print() {
+        Swift.print(self.g)
         for row in matrix {
             var line = String()
             for col in row {
