@@ -16,7 +16,7 @@ class Pazzle {
     var board: Board?
     //var open = [Board]()
     //var close = [Board]()
-    var close = Set<[[Int]]>()
+    var close = Set<Int>()
     
     func run() {
         do {
@@ -57,7 +57,7 @@ class Pazzle {
             for board in children {
                 heap.push(board: board)
             }
-            self.close.insert(board.matrix)
+            self.close.insert(board.matrix.hashValue)
             lavel += 1
         }
     }
@@ -79,7 +79,7 @@ class Pazzle {
             let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
             newBoard.setF(heuristic: heuristic)
             //newBoard.setF(heuristic: getHeuristic(board: newBoard))
-            if !self.close.contains(newBoard.matrix) {
+            if !self.close.contains(newBoard.matrix.hashValue) {
                 childrens.append(newBoard)
             }
         }
