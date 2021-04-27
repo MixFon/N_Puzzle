@@ -22,24 +22,57 @@ class Heap {
     // MARK: Добавление нового элемента.
     func push(board: Board) {
         self.elements.append(board)
-        var child = self.elements.endIndex
-        var parent = getParent(index: child)
-        while self.elements[parent].f < self.elements[child].f {
-            self.elements.swapAt(parent, child)
-            child = parent
-            parent = getParent(index: child)
+        let indexEnd = self.elements.index(before: self.elements.endIndex)
+        balancingUp(index: indexEnd)
+    }
+    
+    // MARK: Балансировка кучи вверх от дочернего узла к родителю.
+    private func balancingUp(index: Int) {
+        if index == 0 { return }
+        let parent = getParent(index: index)
+        if self.elements[parent].f > self.elements[index].f {
+            self.elements.swapAt(parent, index)
+        } else {
+            return
+        }
+        balancingUp(index: parent)
+    }
+    
+    // MARK: Балансировка кучи вниз от родительского к дочекним.
+    private func balancingDown(parent: Int) {
+        if let leftIndex = getIndexLeft(index: parent) {
+            if self.elements[parent].f > self.elements[leftIndex].f {
+                self.elements.swapAt(parent, leftIndex)
+                balancingDown(parent: leftIndex)
+            }
+        }
+        if let rightIndex = getIndexRight(index: parent) {
+            if self.elements[parent].f > self.elements[rightIndex].f {
+                self.elements.swapAt(parent, rightIndex)
+                balancingDown(parent: rightIndex)
+            }
         }
     }
     
-    // MARK: Возвращает элемент в наивысшим приоритетом. Приоритетом является f
+    // MARK: Возвращает элемент в наивысшим приоритетом. Первый элемени пирамиды. (с минимальным значением f)
     func pop() -> Board {
         let board = self.elements.first!
-        self.elements.swapAt(self.elements.startIndex, self.elements.endIndex)
-        self.elements.remove(at: self.elements.endIndex)
-        var parent = self.elements.startIndex
-        var child = 
-        
+        balancingHeap()
         return board
+    }
+    
+    func printHeap() {
+        self.elements.forEach( { print($0.f, terminator: " ") } )
+        print()
+    }
+    
+    // MARK: Балансирока. Меняет местми верхний и последний. Удаляет последний. Меняет местами узлы.
+    private func balancingHeap() {
+        let endIndex = self.elements.index(before: self.elements.endIndex)
+        let startIndex = self.elements.startIndex
+        self.elements.swapAt(startIndex, endIndex)
+        self.elements.remove(at: endIndex)
+        balancingDown(parent: startIndex)
     }
     
     // MARK: Возвращает индекс родителя.
@@ -48,14 +81,16 @@ class Heap {
     }
     
     // MARK: Возвращает индекс левого потомка.
-    private func getLeft(index: Int) -> Int {
+    private func getIndexLeft(index: Int) -> Int? {
+        let result = index * 2 + 1
+        if result >= self.elements.count { return nil }
         return index * 2 + 1
     }
  
     // MARK: Возвращает индекс правого потомка.
-    private func getRight(index: Int) -> Int {
-        return index * 2 + 2
+    private func getIndexRight(index: Int) -> Int? {
+        let result = index * 2 + 2
+        if result >= self.elements.count { return nil }
+        return result
     }
-    
-    
 }

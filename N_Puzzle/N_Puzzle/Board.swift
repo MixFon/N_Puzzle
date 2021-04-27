@@ -151,7 +151,7 @@ class Board: Equatable {
     
     // MARK: Печатает доску.
     func print() {
-        Swift.print(self.g)
+        Swift.print("lavel \(self.g), f \(self.f)")
         for row in matrix {
             var line = String()
             for col in row {

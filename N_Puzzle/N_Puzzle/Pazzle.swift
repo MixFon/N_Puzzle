@@ -14,7 +14,7 @@ class Pazzle {
     var heuristic: Heuristic?
     var boardTarget: Board?
     var board: Board?
-    var open = [Board]()
+    //var open = [Board]()
     var close = [Board]()
     
     func run() {
@@ -27,7 +27,8 @@ class Pazzle {
                 text = readOutput()
             }
             try creationBouard(text: text)
-            searchSolution()
+            searchSolutionWithHeap()
+            
         } catch let exception as Exception {
             systemError(massage: exception.massage)
         } catch {
@@ -35,22 +36,20 @@ class Pazzle {
         }
     }
     
+    
     // MARK: Поиск решения используя алгоритм A*
-    private func searchSolution() {
-//        var queue = [Board]()
+    private func searchSolutionWithHeap() {
+        let heap = Heap()
         var lavel = 0
         self.board!.setF(heuristic: getHeuristic(board: self.board!))
-        //var list = LinkedList()
-        //list.push(board: self.board!)
-        self.open.append(self.board!)
-        self.board?.print()
-        while !self.open.isEmpty {
-        //for _ in 0...2 {
-        //while !list.isEmpty() {
-            let index = getPriorityBoard(boards:  self.open)
-            let board =  self.open[index]
-            //let board =  list.pop()
-            self.open.remove(at: index)
+        heap.push(board: self.board!)
+        //self.board?.print()
+        while !heap.isEmpty() {
+            //heap.printHeap()
+            let board =  heap.pop()
+            //print("del \(board.f)")
+            //heap.printHeap()
+            //board.print()
             if board == self.boardTarget! {
                 printPath(board: board)
                 board.print()
@@ -59,23 +58,58 @@ class Pazzle {
             }
             let neighbors = board.getNeighbors(number: 0)
             let children = getChildrens(neighbors: neighbors, board: board)
-            self.open += children
-//            for board in children {
-//                list.push(board: board)
-//            }
+            for board in children {
+                heap.push(board: board)
+                //print("add: \(board.f)")
+                //heap.printHeap()
+            }
+            //print("====")
             self.close.append(board)
-//            for child in children {
-//                print(child.f)
-//                child.print()
-//            }
-            //board.print()
-            //print(neighbors)
-            //let number = getSwapNumber(neighbors: neighbors)
-            //swapNumber(number: number)
-            //self.board?.print()
             lavel += 1
         }
     }
+    
+    // MARK: Поиск решения используя алгоритм A*
+//    private func searchSolution() {
+////        var queue = [Board]()
+//        var lavel = 0
+//        self.board!.setF(heuristic: getHeuristic(board: self.board!))
+//        //var list = LinkedList()
+//        //list.push(board: self.board!)
+//        self.open.append(self.board!)
+//        self.board?.print()
+//        while !self.open.isEmpty {
+//        //for _ in 0...2 {
+//        //while !list.isEmpty() {
+//            let index = getPriorityBoard(boards:  self.open)
+//            let board =  self.open[index]
+//            //let board =  list.pop()
+//            self.open.remove(at: index)
+//            if board == self.boardTarget! {
+//                printPath(board: board)
+//                board.print()
+//                print(lavel)
+//                return
+//            }
+//            let neighbors = board.getNeighbors(number: 0)
+//            let children = getChildrens(neighbors: neighbors, board: board)
+//            self.open += children
+////            for board in children {
+////                list.push(board: board)
+////            }
+//            self.close.append(board)
+////            for child in children {
+////                print(child.f)
+////                child.print()
+////            }
+//            //board.print()
+//            //print(neighbors)
+//            //let number = getSwapNumber(neighbors: neighbors)
+//            //swapNumber(number: number)
+//            //self.board?.print()
+//            lavel += 1
+//        }
+//    }
     
     private func printPath(board: Board) {
         var next: Board? = board
@@ -95,7 +129,7 @@ class Pazzle {
     private func getChildrens(neighbors: [Int], board: Board) -> [Board] {
         var childrens = [Board]()
         for number in neighbors {
-            var newBoard = Board(board: board)
+            let newBoard = Board(board: board)
             newBoard.swapNumber(number: number)
             newBoard.setF(heuristic: getHeuristic(board: newBoard))
             if !self.close.contains(newBoard) {
