@@ -15,7 +15,8 @@ class Pazzle {
     var boardTarget: Board?
     var board: Board?
     //var open = [Board]()
-    var close = [Board]()
+    //var close = [Board]()
+    var close = Set<[[Int]]>()
     
     func run() {
         do {
@@ -28,7 +29,6 @@ class Pazzle {
             }
             try creationBouard(text: text)
             searchSolutionWithHeap()
-            
         } catch let exception as Exception {
             systemError(massage: exception.massage)
         } catch {
@@ -36,20 +36,16 @@ class Pazzle {
         }
     }
     
-    
     // MARK: Поиск решения используя алгоритм A*
     private func searchSolutionWithHeap() {
         let heap = Heap()
         var lavel = 0
-        self.board!.setF(heuristic: getHeuristic(board: self.board!))
+        self.boardTarget?.print()
+        //self.board!.setF(heuristic: getHeuristic(board: self.board!))
+        self.board!.setF(heuristic: self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats))
         heap.push(board: self.board!)
-        //self.board?.print()
         while !heap.isEmpty() {
-            //heap.printHeap()
             let board =  heap.pop()
-            //print("del \(board.f)")
-            //heap.printHeap()
-            //board.print()
             if board == self.boardTarget! {
                 printPath(board: board)
                 board.print()
@@ -60,56 +56,11 @@ class Pazzle {
             let children = getChildrens(neighbors: neighbors, board: board)
             for board in children {
                 heap.push(board: board)
-                //print("add: \(board.f)")
-                //heap.printHeap()
             }
-            //print("====")
-            self.close.append(board)
+            self.close.insert(board.matrix)
             lavel += 1
         }
     }
-    
-    // MARK: Поиск решения используя алгоритм A*
-//    private func searchSolution() {
-////        var queue = [Board]()
-//        var lavel = 0
-//        self.board!.setF(heuristic: getHeuristic(board: self.board!))
-//        //var list = LinkedList()
-//        //list.push(board: self.board!)
-//        self.open.append(self.board!)
-//        self.board?.print()
-//        while !self.open.isEmpty {
-//        //for _ in 0...2 {
-//        //while !list.isEmpty() {
-//            let index = getPriorityBoard(boards:  self.open)
-//            let board =  self.open[index]
-//            //let board =  list.pop()
-//            self.open.remove(at: index)
-//            if board == self.boardTarget! {
-//                printPath(board: board)
-//                board.print()
-//                print(lavel)
-//                return
-//            }
-//            let neighbors = board.getNeighbors(number: 0)
-//            let children = getChildrens(neighbors: neighbors, board: board)
-//            self.open += children
-////            for board in children {
-////                list.push(board: board)
-////            }
-//            self.close.append(board)
-////            for child in children {
-////                print(child.f)
-////                child.print()
-////            }
-//            //board.print()
-//            //print(neighbors)
-//            //let number = getSwapNumber(neighbors: neighbors)
-//            //swapNumber(number: number)
-//            //self.board?.print()
-//            lavel += 1
-//        }
-//    }
     
     private func printPath(board: Board) {
         var next: Board? = board
@@ -117,12 +68,6 @@ class Pazzle {
             next?.print()
             next = next?.parent
         }
-//        while !self.close.isEmpty {
-//            let index = getPriorityBoard(boards:  self.close)
-//            let board =  self.close[index]
-//            self.close.remove(at: index)
-//            board.print()
-//        }
     }
     
     // MARK: Возвращает список смежных состояний.
@@ -131,12 +76,18 @@ class Pazzle {
         for number in neighbors {
             let newBoard = Board(board: board)
             newBoard.swapNumber(number: number)
-            newBoard.setF(heuristic: getHeuristic(board: newBoard))
-            if !self.close.contains(newBoard) {
+            let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
+            newBoard.setF(heuristic: heuristic)
+            //newBoard.setF(heuristic: getHeuristic(board: newBoard))
+            if !self.close.contains(newBoard.matrix) {
                 childrens.append(newBoard)
             }
         }
         return childrens
+    }
+    
+    private func cornerHeuristic(coordinats: [Int: (Int, Int)]) -> Int {
+        return 0
     }
     
     // MARK: Возвращает достку с максимальным приоритетом.
@@ -150,42 +101,6 @@ class Pazzle {
             }
         }
         return index
-    }
-    
-    // MARK: Возвращает количество пройдейного пути.
-//    private func getCost(cost: Int) -> Int {
-//        return cost
-//    }
-    
-//    private func getCost(board: Board) -> Int {
-//        let numberCoordinats = board.getCoordinatsNumber(number: 0)
-//        let targetCoordinats = self.boardTarget!.getCoordinatsNumber(number: 0)
-//        let result = abs(numberCoordinats.0 - targetCoordinats.0) + abs(numberCoordinats.1 - targetCoordinats.1)
-//        return result
-//    }
-    
-    // MARK: Возвращает эвристику согласно установленному флагу.
-    private func getHeuristic(board: Board) -> Int {
-        switch self.heuristic {
-        case .manhattan:
-            return manhattanDistance(board: board)
-        default:
-            break
-        }
-        return Int.max
-    }
-    
-    // MARK: Эвристика манхетонского расстояния.
-    private func manhattanDistance(board: Board) -> Int {
-        var result = 0
-        for row in board.matrix {
-            for number in row {
-                let numberCoordinats = board.getCoordinatsNumber(number: number)
-                let targetCoordinats = self.boardTarget!.getCoordinatsNumber(number: number)
-                result += abs(numberCoordinats.0 - targetCoordinats.0) + abs(numberCoordinats.1 - targetCoordinats.1)
-            }
-        }
-        return result
     }
     
     // MARK: Проверяет не находится ли номер на своем месте.
@@ -222,8 +137,6 @@ class Pazzle {
         let boardTarget = Board(size: board.size)
         self.board = board
         self.boardTarget = boardTarget
-        //self.board?.print()
-        //self.boardTarget?.print()
     }
     
     // Создает на основе строки массив целочисленных элементов.
@@ -263,6 +176,10 @@ class Pazzle {
                 switch argument {
                 case "-m":
                     self.heuristic = .manhattan
+                case "-ch":
+                    self.heuristic = .chebyshev
+                case "-eu":
+                    self.heuristic = .euclidean
                 default:
                     throw Exception(massage: "Invalid agument: \(argument)")
                 }

@@ -9,4 +9,50 @@ import Foundation
 
 enum Heuristic: String {
     case manhattan = "-m"
+    case chebyshev = "-ch"
+    case euclidean = "-eu"
+    
+    // MARK: Возвращает эвристику согласно установленному флагу.
+    func getHeuristic(coordinats: [Int: (Int, Int)], coordinatsTarget: [Int: (Int, Int)]) -> Int {
+        switch self {
+        case .manhattan:
+            return manhattanDistance(coordinats: coordinats, coordinatsTarget: coordinatsTarget)
+        case .chebyshev:
+            return chebyshevDistance(coordinats: coordinats, coordinatsTarget: coordinatsTarget)
+        default:
+            return euclideanDistance(coordinats: coordinats, coordinatsTarget: coordinatsTarget)
+        }
+    }
+    
+    // MARK: Эвристика манхетонского расстояния.
+    private func manhattanDistance(coordinats: [Int: (Int, Int)], coordinatsTarget: [Int: (Int, Int)]) -> Int {
+        var result = 0
+        for element in coordinats {
+            let targetCoordinats = coordinatsTarget[element.key]!
+            result += abs(element.value.0 - targetCoordinats.0) + abs(element.value.1 - targetCoordinats.1)
+        }
+        return result
+    }
+    
+    // MARK: Эвристика растояния Чебышева.
+    private func chebyshevDistance(coordinats: [Int: (Int, Int)], coordinatsTarget: [Int: (Int, Int)]) -> Int {
+        var result = 0
+        for element in coordinats {
+            let targetCoordinats = coordinatsTarget[element.key]!
+            result +=  max(abs(element.value.0 - targetCoordinats.0), abs(element.value.1 - targetCoordinats.1))
+        }
+        return result
+    }
+    
+    // MARK: Эвристика Эвклидова расстояния.
+    private func euclideanDistance(coordinats: [Int: (Int, Int)], coordinatsTarget: [Int: (Int, Int)]) -> Int {
+        var result = 0.0
+        for element in coordinats {
+            let targetCoordinats = coordinatsTarget[element.key]!
+            let left = pow(Double(element.value.0 - targetCoordinats.0), 2.0)
+            let right = pow(Double(element.value.1 - targetCoordinats.1), 2.0)
+            result += sqrt(left + right)
+        }
+        return Int(result)
+    }
 }

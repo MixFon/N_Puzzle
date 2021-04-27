@@ -12,8 +12,6 @@
 		291D5BF826305F7500342374 /* Exception.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BF726305F7500342374 /* Exception.swift */; };
 		291D5BFB2630647000342374 /* Heuristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BFA2630647000342374 /* Heuristic.swift */; };
 		291D5BFE26307F0400342374 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BFD26307F0400342374 /* Board.swift */; };
-		29C871E82635817D0022605C /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C871E72635817D0022605C /* Node.swift */; };
-		29C871EC263582E60022605C /* LinkedList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C871EB263582E60022605C /* LinkedList.swift */; };
 		29C871EF2635ACCF0022605C /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C871EE2635ACCF0022605C /* Heap.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,8 +34,6 @@
 		291D5BF726305F7500342374 /* Exception.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exception.swift; sourceTree = "<group>"; };
 		291D5BFA2630647000342374 /* Heuristic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heuristic.swift; sourceTree = "<group>"; };
 		291D5BFD26307F0400342374 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
-		29C871E72635817D0022605C /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
-		29C871EB263582E60022605C /* LinkedList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkedList.swift; sourceTree = "<group>"; };
 		29C871EE2635ACCF0022605C /* Heap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,8 +72,6 @@
 				291D5BF726305F7500342374 /* Exception.swift */,
 				291D5BFA2630647000342374 /* Heuristic.swift */,
 				291D5BFD26307F0400342374 /* Board.swift */,
-				29C871E72635817D0022605C /* Node.swift */,
-				29C871EB263582E60022605C /* LinkedList.swift */,
 				29C871EE2635ACCF0022605C /* Heap.swift */,
 			);
 			path = N_Puzzle;
@@ -140,14 +134,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29C871E82635817D0022605C /* Node.swift in Sources */,
 				291D5BF826305F7500342374 /* Exception.swift in Sources */,
 				291D5BE9263056D700342374 /* main.swift in Sources */,
 				29C871EF2635ACCF0022605C /* Heap.swift in Sources */,
 				291D5BFE26307F0400342374 /* Board.swift in Sources */,
 				291D5BFB2630647000342374 /* Heuristic.swift in Sources */,
 				291D5BF12630593300342374 /* Pazzle.swift in Sources */,
-				29C871EC263582E60022605C /* LinkedList.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
