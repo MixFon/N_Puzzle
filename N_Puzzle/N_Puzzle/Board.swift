@@ -9,14 +9,14 @@ import Foundation
 
 class Board: Equatable {
     var size: Int
-    var matrix: [[Int]]
-    var coordinats = [Int: (Int, Int)]()
+    var matrix: [[Int8]]
+    var coordinats = [Int8: (Int8, Int8)]()
     var f: Int
     var g: Int
     weak var parent: Board?
     
     // MARK: Создание доски на основе матрицы и размера
-    init(size: Int, matrix: [[Int]]) throws {
+    init(size: Int, matrix: [[Int8]]) throws {
         self.size = size
         self.matrix = matrix
         self.f = 0
@@ -46,40 +46,40 @@ class Board: Equatable {
     }
     
     // MARK: Устанавливает значение f
-    func setF(heuristic: Int) {
-        self.f = self.g + heuristic
+    func setF(heuristic: Int8) {
+        self.f = self.g + Int(heuristic)
     }
     
     // MARK: Возвращает координаты ячейки с номером.
-    func getCoordinatsNumber(number: Int) -> (Int, Int) {
-        guard let coordinats = self.coordinats[number] else { return (Int.max, Int.max) }
+    func getCoordinatsNumber(number: Int8) -> (Int8, Int8) {
+        guard let coordinats = self.coordinats[number] else { return (Int8.max, Int8.max) }
         return coordinats
     }
     
     // MARK: Возвращает номера соседних ячеек.
-    func getNeighbors(number: Int) -> [Int] {
-        var result = [Int]()
+    func getNeighbors(number: Int8) -> [Int8] {
+        var result = [Int8]()
         guard let coordinats = self.coordinats[number] else {
             return []
         }
         if coordinats.1 - 1 >= 0 {
-            result.append(matrix[coordinats.0][coordinats.1 - 1])
+            result.append(matrix[Int(coordinats.0)][Int(coordinats.1) - 1])
         }
         if coordinats.0 - 1 >= 0 {
-            result.append(matrix[coordinats.0 - 1][coordinats.1])
+            result.append(matrix[Int(coordinats.0) - 1][Int(coordinats.1)])
         }
         if coordinats.1 + 1 < self.size {
-            result.append(matrix[coordinats.0][coordinats.1 + 1])
+            result.append(matrix[Int(coordinats.0)][Int(coordinats.1) + 1])
         }
         if coordinats.0 + 1 < self.size {
-            result.append(matrix[coordinats.0 + 1][coordinats.1])
+            result.append(matrix[Int(coordinats.0) + 1][Int(coordinats.1)])
         }
         return result
     }
     
     // MARK: Заполняет доску по спирали.
     private func fillBoard() {
-        var filler = 1
+        var filler: Int8 = 1
         for i in 0..<self.size {
             self.matrix[0][i] = filler
             filler += 1
@@ -104,7 +104,7 @@ class Board: Equatable {
     }
     
     // MARK: Заполняет внутренюю часть квадрата.
-    private func fillSquare(filler: Int) {
+    private func fillSquare(filler: Int8) {
         var filler = filler
         let end = self.size * self.size
         var x = 1
@@ -140,7 +140,7 @@ class Board: Equatable {
         Swift.print(elements)
         for row in matrix {
             for elem in row {
-                elementsBoard.insert(elem)
+                elementsBoard.insert(Int(elem))
             }
         }
         Swift.print(elementsBoard)
@@ -168,17 +168,17 @@ class Board: Equatable {
         for (i, row) in self.matrix.enumerated() {
             for (j, element) in row.enumerated() {
                 //
-                self.coordinats[element] = (i, j)
+                self.coordinats[element] = (Int8(i), Int8(j))
             }
         }
     }
     
     // MARK: Меняет местами номер и пустую клетку местами.
-    func swapNumber(number: Int) {
+    func swapNumber(number: Int8) {
         let coordinatsNumber = getCoordinatsNumber(number: number)
         let coordinatsZero = getCoordinatsNumber(number: 0)
-        self.matrix[coordinatsNumber.0][coordinatsNumber.1] = 0
-        self.matrix[coordinatsZero.0][coordinatsZero.1] = number
+        self.matrix[Int(coordinatsNumber.0)][Int(coordinatsNumber.1)] = 0
+        self.matrix[Int(coordinatsZero.0)][Int(coordinatsZero.1)] = number
         self.coordinats[number] = coordinatsZero
         self.coordinats[0] = coordinatsNumber
     }

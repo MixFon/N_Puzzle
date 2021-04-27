@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CoreFoundation
+//import CoreFoundation
 
 class Pazzle {
     
@@ -16,7 +16,8 @@ class Pazzle {
     var board: Board?
     //var open = [Board]()
     //var close = [Board]()
-    var close = Set<Int>()
+    //var close = Set<Int>()
+    var close = [Int: Board]()
     
     func run() {
         do {
@@ -42,7 +43,7 @@ class Pazzle {
         var lavel = 0
         self.boardTarget?.print()
         //self.board!.setF(heuristic: getHeuristic(board: self.board!))
-        self.board!.setF(heuristic: self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats))
+        self.board!.setF(heuristic: Int8(self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats)))
         heap.push(board: self.board!)
         while !heap.isEmpty() {
             let board =  heap.pop()
@@ -57,7 +58,8 @@ class Pazzle {
             for board in children {
                 heap.push(board: board)
             }
-            self.close.insert(board.matrix.hashValue)
+            //self.close.insert(board.matrix.hashValue)
+            self.close[board.matrix.hashValue] = board
             lavel += 1
         }
     }
@@ -71,23 +73,54 @@ class Pazzle {
     }
     
     // MARK: Возвращает список смежных состояний.
-    private func getChildrens(neighbors: [Int], board: Board) -> [Board] {
+    private func getChildrens(neighbors: [Int8], board: Board) -> [Board] {
         var childrens = [Board]()
         for number in neighbors {
             let newBoard = Board(board: board)
             newBoard.swapNumber(number: number)
-            let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
+            var heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
+            //heuristic += cornerHeuristic(board: newBoard)
             newBoard.setF(heuristic: heuristic)
-            //newBoard.setF(heuristic: getHeuristic(board: newBoard))
-            if !self.close.contains(newBoard.matrix.hashValue) {
+            if (self.close[newBoard.matrix.hashValue] == nil) {
                 childrens.append(newBoard)
             }
         }
         return childrens
     }
     
-    private func cornerHeuristic(coordinats: [Int: (Int, Int)]) -> Int {
+    private func cornerHeuristic(board: Board) -> Int {
+        //var result = 0
+        let size = self.board!.size
+        var value = self.boardTarget!.matrix[0][0]
+        if !isLocal(number: value, board: board) {
+            if isLocal(number: value + 1, board: board) {
+                //result += 2
+                return 2
+            }
+        }
+        value = self.boardTarget!.matrix[0][size - 1]
+        if !isLocal(number: value, board: board) {
+            if isLocal(number: value + 1, board: board) || isLocal(number: value - 1, board: board) {
+                //result += 2
+                return 2
+            }
+        }
+        value = self.boardTarget!.matrix[size - 1][size - 1]
+        if !isLocal(number: value, board: board) {
+            if isLocal(number: value + 1, board: board) || isLocal(number: value - 1, board: board) {
+                //result += 2
+                return 2
+            }
+        }
+        value = self.boardTarget!.matrix[size - 1][0]
+        if !isLocal(number: value, board: board) {
+            if isLocal(number: value + 1, board: board) || isLocal(number: value - 1, board: board) {
+                //result += 2
+                return 2
+            }
+        }
         return 0
+        //return result
     }
     
     // MARK: Возвращает достку с максимальным приоритетом.
@@ -104,8 +137,8 @@ class Pazzle {
     }
     
     // MARK: Проверяет не находится ли номер на своем месте.
-    private func isLocal(number: Int) -> Bool {
-        let coordinatsNumber = self.board!.getCoordinatsNumber(number: number)
+    private func isLocal(number: Int8, board: Board) -> Bool {
+        let coordinatsNumber = board.getCoordinatsNumber(number: number)
         let coordinatsTarget = self.boardTarget!.getCoordinatsNumber(number: number)
         return coordinatsNumber == coordinatsTarget
     }
@@ -114,7 +147,7 @@ class Pazzle {
     private func creationBouard(text: String) throws {
         let lines = text.split() { $0 == "\n" }.map{ String($0) }
         var size: Int?
-        var arr = [[Int]]()
+        var arr = [[Int8]]()
         for line in lines {
             let data = getData(line: line)
             let words = try getWords(data: data)
@@ -122,7 +155,7 @@ class Pazzle {
             case 0:
                 break
             case 1 where size == nil:
-                size = words[0]
+                size = Int(words[0])
             case 2... where words.count == size:
                 arr.append(words)
             default:
@@ -140,14 +173,14 @@ class Pazzle {
     }
     
     // Создает на основе строки массив целочисленных элементов.
-    private func getWords(data: String) throws -> [Int] {
+    private func getWords(data: String) throws -> [Int8] {
         let words = data.split() { $0 == " "}.map { String($0) }
         if words.isEmpty {
-            return [Int]()
+            return [Int8]()
         }
-        var numbers = [Int]()
+        var numbers = [Int8]()
         for word in words {
-            guard let number = Int(word) else {
+            guard let number = Int8(word) else {
                 throw Exception(massage: "Invalid data: \(word)")
             }
             numbers.append(number)
