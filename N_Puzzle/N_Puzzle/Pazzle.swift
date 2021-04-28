@@ -79,7 +79,7 @@ class Pazzle {
             let newBoard = Board(board: board)
             newBoard.swapNumber(number: number)
             var heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
-            //heuristic += cornerHeuristic(board: newBoard)
+            heuristic += cornerHeuristic(board: newBoard)
             newBoard.setF(heuristic: heuristic)
             if (self.close[newBoard.matrix.hashValue] == nil) {
                 childrens.append(newBoard)
@@ -88,7 +88,7 @@ class Pazzle {
         return childrens
     }
     
-    private func cornerHeuristic(board: Board) -> Int {
+    private func cornerHeuristic(board: Board) -> Int8 {
         //var result = 0
         let size = self.board!.size
         var value = self.boardTarget!.matrix[0][0]
