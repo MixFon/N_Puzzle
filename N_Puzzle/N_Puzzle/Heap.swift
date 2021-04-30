@@ -61,6 +61,7 @@ class Heap {
         return board
     }
     
+    // MARK: Вывод кучи.
     func printHeap() {
         self.elements.forEach( { print($0.f, terminator: " ") } )
         print()

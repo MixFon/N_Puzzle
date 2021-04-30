@@ -7,7 +7,6 @@
 
 import Foundation
 
-print("Hello, World!")
+print("Welcom to N-Pazzle!")
 let pazzle = Pazzle()
 pazzle.run()
-
