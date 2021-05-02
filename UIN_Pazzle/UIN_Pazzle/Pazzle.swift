@@ -15,23 +15,10 @@ class Pazzle {
     var board: Board?
     var close = [Int: Board]()
     
-    func run() {
-        do {
-            let text: String
-            try workingArguments()
-            if let fileName = self.fileName {
-                text = try readFile(fileName: fileName)
-            } else {
-                text = readOutput()
-            }
+    func run(text: String) throws {
             try creationBouard(text: text)
             try checkSolution()
-            searchSolutionWithHeap()
-        } catch let exception as Exception {
-            systemError(massage: exception.massage)
-        } catch {
-            systemError(massage: "Unknown error.")
-        }
+            //searchSolutionWithHeap()
     }
     
     // MARK: Поиск решения используя алгоритм A*
@@ -69,12 +56,12 @@ class Pazzle {
         if board!.size % 2 == 0 {
             print("Invariants: ", coordinateZeroBoard, coordinateZeroBoardTarget)
             if coordinateZeroBoard % 2 != coordinateZeroBoardTarget % 2 {
-                throw Exception(massage: "The Pazzle has no solution.")
+                throw Exception(massage: "Has no solution.")
             }
         } else {
             print("Invariants: ", summa, summaTarget)
             if summa % 2 != summaTarget % 2 {
-                throw Exception(massage: "The Pazzle has no solution.")
+                throw Exception(massage: "Has no solution.")
             }
         }
     }
@@ -112,7 +99,7 @@ class Pazzle {
         var childrens = [Board]()
         for number in neighbors {
             let newBoard = Board(board: board)
-            newBoard.swapNumber(number: number)
+            newBoard.swapNumber(numberFrom: number, numberTo: 0)
             let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
             newBoard.setF(heuristic: heuristic)
             if (self.close[newBoard.matrix.hashValue] == nil) {
@@ -151,7 +138,7 @@ class Pazzle {
         guard let sizeBoard = size else {
             throw Exception(massage: "Invalid data.")
         }
-        if arr.count != sizeBoard || arr.count <= 0 {
+        if arr.count != sizeBoard || arr.count <= 0 || sizeBoard < 3 {
             throw Exception(massage: "The board size is set incorrectly.")
         }
         let board = try Board(size: sizeBoard, matrix: arr)

@@ -17,6 +17,8 @@
 		29A6EC18263C6EE600821374 /* Heuristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC13263C6EE600821374 /* Heuristic.swift */; };
 		29A6EC19263C6EE600821374 /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC14263C6EE600821374 /* Heap.swift */; };
 		29A6EC1A263C6EE600821374 /* Pazzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC15263C6EE600821374 /* Pazzle.swift */; };
+		29A6EC1E263D88DB00821374 /* LeftVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC1D263D88DB00821374 /* LeftVC.swift */; };
+		29A6EC22263D894B00821374 /* SplitVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC21263D894B00821374 /* SplitVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +35,8 @@
 		29A6EC13263C6EE600821374 /* Heuristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heuristic.swift; sourceTree = "<group>"; };
 		29A6EC14263C6EE600821374 /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		29A6EC15263C6EE600821374 /* Pazzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pazzle.swift; sourceTree = "<group>"; };
+		29A6EC1D263D88DB00821374 /* LeftVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftVC.swift; sourceTree = "<group>"; };
+		29A6EC21263D894B00821374 /* SplitVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +76,8 @@
 				29A6EC15263C6EE600821374 /* Pazzle.swift */,
 				2975E5A1263AF59F00C1EBD4 /* AppDelegate.swift */,
 				2975E5A3263AF59F00C1EBD4 /* GameViewController.swift */,
+				29A6EC1D263D88DB00821374 /* LeftVC.swift */,
+				29A6EC21263D894B00821374 /* SplitVC.swift */,
 				2975E5A5263AF59F00C1EBD4 /* art.scnassets */,
 				2975E5A7263AF5A300C1EBD4 /* Assets.xcassets */,
 				2975E5A9263AF5A300C1EBD4 /* Main.storyboard */,
@@ -154,9 +160,11 @@
 				2975E5A4263AF59F00C1EBD4 /* GameViewController.swift in Sources */,
 				29A6EC1A263C6EE600821374 /* Pazzle.swift in Sources */,
 				29A6EC18263C6EE600821374 /* Heuristic.swift in Sources */,
+				29A6EC1E263D88DB00821374 /* LeftVC.swift in Sources */,
 				29A6EC17263C6EE600821374 /* Exception.swift in Sources */,
 				29A6EC19263C6EE600821374 /* Heap.swift in Sources */,
 				2975E5A2263AF59F00C1EBD4 /* AppDelegate.swift in Sources */,
+				29A6EC22263D894B00821374 /* SplitVC.swift in Sources */,
 				29A6EC16263C6EE600821374 /* Board.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

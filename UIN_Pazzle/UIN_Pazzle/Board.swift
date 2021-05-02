@@ -171,13 +171,13 @@ class Board: Equatable {
     }
     
     // MARK: Меняет местами номер и пустую клетку местами.
-    func swapNumber(number: Int16) {
-        let coordinatsNumber = getCoordinatsNumber(number: number)
-        let coordinatsZero = getCoordinatsNumber(number: 0)
-        self.matrix[Int(coordinatsNumber.0)][Int(coordinatsNumber.1)] = 0
-        self.matrix[Int(coordinatsZero.0)][Int(coordinatsZero.1)] = number
-        self.coordinats[number] = coordinatsZero
-        self.coordinats[0] = coordinatsNumber
+    func swapNumber(numberFrom: Int16, numberTo: Int16) {
+        let coordinatsFrom = getCoordinatsNumber(number: numberFrom)
+        let coordinatsTo = getCoordinatsNumber(number: numberTo)
+        self.matrix[Int(coordinatsFrom.0)][Int(coordinatsFrom.1)] = numberTo
+        self.matrix[Int(coordinatsTo.0)][Int(coordinatsTo.1)] = numberFrom
+        self.coordinats[numberFrom] = coordinatsTo
+        self.coordinats[numberTo] = coordinatsFrom
     }
     
     static func == (left: Board, right: Board) -> Bool {
