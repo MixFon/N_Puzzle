@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		296AB40D26416EC40076AB8E /* TypePuzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296AB40C26416EC40076AB8E /* TypePuzzle.swift */; };
 		2975E5A2263AF59F00C1EBD4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975E5A1263AF59F00C1EBD4 /* AppDelegate.swift */; };
 		2975E5A4263AF59F00C1EBD4 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975E5A3263AF59F00C1EBD4 /* GameViewController.swift */; };
 		2975E5A6263AF59F00C1EBD4 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 2975E5A5263AF59F00C1EBD4 /* art.scnassets */; };
@@ -16,12 +17,13 @@
 		29A6EC17263C6EE600821374 /* Exception.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC12263C6EE600821374 /* Exception.swift */; };
 		29A6EC18263C6EE600821374 /* Heuristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC13263C6EE600821374 /* Heuristic.swift */; };
 		29A6EC19263C6EE600821374 /* Heap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC14263C6EE600821374 /* Heap.swift */; };
-		29A6EC1A263C6EE600821374 /* Pazzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC15263C6EE600821374 /* Pazzle.swift */; };
+		29A6EC1A263C6EE600821374 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC15263C6EE600821374 /* Puzzle.swift */; };
 		29A6EC1E263D88DB00821374 /* LeftVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC1D263D88DB00821374 /* LeftVC.swift */; };
 		29A6EC22263D894B00821374 /* SplitVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A6EC21263D894B00821374 /* SplitVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		296AB40C26416EC40076AB8E /* TypePuzzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypePuzzle.swift; sourceTree = "<group>"; };
 		2975E59E263AF59F00C1EBD4 /* UIN_Pazzle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIN_Pazzle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2975E5A1263AF59F00C1EBD4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2975E5A3263AF59F00C1EBD4 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -34,7 +36,7 @@
 		29A6EC12263C6EE600821374 /* Exception.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exception.swift; sourceTree = "<group>"; };
 		29A6EC13263C6EE600821374 /* Heuristic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heuristic.swift; sourceTree = "<group>"; };
 		29A6EC14263C6EE600821374 /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
-		29A6EC15263C6EE600821374 /* Pazzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pazzle.swift; sourceTree = "<group>"; };
+		29A6EC15263C6EE600821374 /* Puzzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Puzzle.swift; sourceTree = "<group>"; };
 		29A6EC1D263D88DB00821374 /* LeftVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftVC.swift; sourceTree = "<group>"; };
 		29A6EC21263D894B00821374 /* SplitVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,7 +75,8 @@
 				29A6EC12263C6EE600821374 /* Exception.swift */,
 				29A6EC14263C6EE600821374 /* Heap.swift */,
 				29A6EC13263C6EE600821374 /* Heuristic.swift */,
-				29A6EC15263C6EE600821374 /* Pazzle.swift */,
+				29A6EC15263C6EE600821374 /* Puzzle.swift */,
+				296AB40C26416EC40076AB8E /* TypePuzzle.swift */,
 				2975E5A1263AF59F00C1EBD4 /* AppDelegate.swift */,
 				2975E5A3263AF59F00C1EBD4 /* GameViewController.swift */,
 				29A6EC1D263D88DB00821374 /* LeftVC.swift */,
@@ -158,10 +161,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				2975E5A4263AF59F00C1EBD4 /* GameViewController.swift in Sources */,
-				29A6EC1A263C6EE600821374 /* Pazzle.swift in Sources */,
+				29A6EC1A263C6EE600821374 /* Puzzle.swift in Sources */,
 				29A6EC18263C6EE600821374 /* Heuristic.swift in Sources */,
 				29A6EC1E263D88DB00821374 /* LeftVC.swift in Sources */,
 				29A6EC17263C6EE600821374 /* Exception.swift in Sources */,
+				296AB40D26416EC40076AB8E /* TypePuzzle.swift in Sources */,
 				29A6EC19263C6EE600821374 /* Heap.swift in Sources */,
 				2975E5A2263AF59F00C1EBD4 /* AppDelegate.swift in Sources */,
 				29A6EC22263D894B00821374 /* SplitVC.swift in Sources */,

@@ -7,34 +7,42 @@
 
 import Foundation
 
-class Pazzle {
+class Puzzle {
     
-    var fileName: String?
     var heuristic: Heuristic?
     var boardTarget: Board?
     var board: Board?
-    var close = [Int: Board]()
+    var close: [Int: Board]
+    var type: TypePuzzle
     
-    func run(text: String) throws {
-            try creationBouard(text: text)
-            try checkSolution()
-            //searchSolutionWithHeap()
+    init(type: TypePuzzle) {
+        self.heuristic = .manhattan
+        self.type = type
+        self.close = [Int: Board]()
+        //searchSolutionWithHeap()
+    }
+    
+    convenience init(text: String, type: TypePuzzle) throws {
+        self.init(type: type)
+        try creationBouard(text: text)
+        try checkSolution()
+        //searchSolutionWithHeap()
     }
     
     // MARK: Поиск решения используя алгоритм A*
-    private func searchSolutionWithHeap() {
+    func searchSolutionWithHeap() -> Board? {
         let heap = Heap()
         var complexityTime = 0
         self.board!.setF(heuristic: self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats))
         heap.push(board: self.board!)
         while !heap.isEmpty() {
-            let board =  heap.pop()
+            let board = heap.pop()
             if board == self.boardTarget! {
                 printPath(board: board)
                 print("Complexity in time:", complexityTime)
                 print("Complexity in size:", self.close.count)
                 print("States to solution:", board.g)
-                return
+                return board
             }
             let neighbors = board.getNeighbors(number: 0)
             let children = getChildrens(neighbors: neighbors, board: board)
@@ -45,6 +53,7 @@ class Pazzle {
             self.close[board.matrix.hashValue] = board
         }
         print("The Pazzle has no solution.")
+        return nil
     }
     
     // MARK: Проверяет существет ли решение головоломки.
@@ -64,6 +73,16 @@ class Pazzle {
                 throw Exception(massage: "Has no solution.")
             }
         }
+    }
+    
+    // MARK: Проверяет есть ли решение головоломки.
+    func isSolution() -> Bool {
+        do {
+            try checkSolution()
+        } catch {
+            return false
+        }
+        return true
     }
     
     private func getSummInversion(matrix: [[Int16]]) -> Int {
@@ -142,7 +161,7 @@ class Pazzle {
             throw Exception(massage: "The board size is set incorrectly.")
         }
         let board = try Board(size: sizeBoard, matrix: arr)
-        let boardTarget = Board(size: board.size)
+        let boardTarget = Board(size: board.size, type: self.type)
         self.board = board
         self.boardTarget = boardTarget
     }
@@ -174,59 +193,5 @@ class Pazzle {
             }
         }
         return data
-    }
-    
-    // MARK: Обработка аргументов.
-    private func workingArguments() throws {
-        for argument in CommandLine.arguments[1...] {
-            guard let firstCaracter = argument.first else { continue }
-            if firstCaracter == "-" {
-                switch argument {
-                case "-m":
-                    self.heuristic = .manhattan
-                case "-ch":
-                    self.heuristic = .chebyshev
-                case "-eu":
-                    self.heuristic = .euclidean
-                case "-s":
-                    self.heuristic = .simple
-                default:
-                    throw Exception(massage: "Invalid agument: \(argument)")
-                }
-            } else {
-                if self.fileName == nil {
-                    self.fileName = argument
-                } else {
-                    throw Exception(massage: "Invalid agument: \(argument)")
-                }
-            }
-        }
-        if self.heuristic == nil {
-            self.heuristic = .manhattan
-        }
-    }
-    
-    // MARK: Вывод сообщения об ошибке в поток ошибок
-    private func systemError(massage: String) {
-        fputs(massage + "\n", stderr)
-        exit(-1)
-    }
-    
-    // MARK: Чтение файла из стандарного потока ввода.
-    private func readOutput() -> String {
-        var text = String()
-        while true {
-            guard let line = readLine() else { break }
-            text.append("\(line)\n")
-        }
-        return text
-    }
-    
-    // MARK: Чтение файла из файла.
-    private func readFile(fileName: String) throws -> String {
-        let manager = FileManager.default
-        let currentDirURL = URL(fileURLWithPath: manager.currentDirectoryPath)
-        let fileURL = currentDirURL.appendingPathComponent(fileName)
-        return try String(contentsOf: fileURL)
     }
 }

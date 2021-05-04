@@ -15,11 +15,19 @@ class GameViewController: NSViewController {
     var size: Int?
     var len: Int?
     var delta: Int?
+    var duraction: TimeInterval?
     //var nodes: [SCNNode]?
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        self.len = 4
+        self.delta = 3
+        self.duraction = 0.5
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //print("view game")
+        
         // create a new scene
         self.scene = SCNScene(named: "art.scnassets/ship.scn")
         guard let scene = self.scene else { return }
@@ -29,7 +37,7 @@ class GameViewController: NSViewController {
         scene.rootNode.addChildNode(cameraNode)
         
         // place the camera
-        cameraNode.position = SCNVector3(x: 5, y: -5, z: 30)
+        cameraNode.position = SCNVector3(x: 7, y: -7, z: 25)
         
         // create and add a light to the scene
         let lightNode = SCNNode()
@@ -136,7 +144,10 @@ class GameViewController: NSViewController {
             let position = result.node.position
             let coordinate = (Int(position.x), Int(position.y))
             //print(position)
-            if moveNumber(position: coordinate) {
+            var actions = [SCNAction]()
+            if moveNumber(actions: &actions, position: coordinate) {
+                let sequence = SCNAction.sequence(actions)
+                SCNNode().runAction(sequence)
                 return
             }
         
@@ -165,23 +176,38 @@ class GameViewController: NSViewController {
     
     // MARK: Перемещает все кубики поочереди на пустое место.
     func moveAllNumbers(positions: [(Int, Int)]) {
+        var actions = [SCNAction]()
         for position in positions {
-            _ = moveNumber(position: position)
+            _ = moveNumber(actions: &actions, position: position)
         }
+        let sequence = SCNAction.sequence(actions)
+        SCNNode().runAction(sequence)
     }
     
     // MARK: Перемещает кубик в заданную координату. (На пустое место)
-    func moveNumber(position: (Int, Int)) -> Bool {
+    func moveNumber( actions: inout [SCNAction], position: (Int, Int) ) -> Bool {
         guard let len = self.len else { return false }
         guard let delta = self.delta else { return false }
         guard let board = self.board else { return false }
+        guard let duration = self.duraction else { return false }
         if let number = board.isNeighbors(nodePositiont: position, wight: len + delta) {
             guard let positionZero = board.coordinats[0] else { return false }
             let y = -CGFloat(positionZero.0) * CGFloat(len + delta)
             let x = CGFloat(positionZero.1) * CGFloat(len + delta)
             if let node = getNode(number: number) {
-                node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: 0.5))
+//                let action = SCNAction.customAction(duration: 1) { (nodeA, elapsedTime) in
+//                    node.position = SCNVector3(x: x, y: y, z: 0)
+//                }
+                let action = SCNAction.customAction(duration: duration, action: {(nodeA, elapsedTime) in
+                    //node.position = SCNVector3(x: x, y: y, z: 0)
+                    node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: duration))
+                    //SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: 0.5)
+                })
+                actions.append(action)
+                //print(actions.count)
+                //node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: 0.5))
                 board.swapNumber(numberFrom: number, numberTo: 0)
+                node.runAction(SCNAction.sequence(actions))
                 return true
             }
         }
@@ -204,13 +230,12 @@ class GameViewController: NSViewController {
     func animateNewBoard(board: Board) {
         guard let len = self.len else { return }
         guard let delta = self.delta else { return }
+        guard let duration = self.duraction else { return }
         for (number, coordinate) in board.coordinats {
-            //guard let positionZero = board.coordinats[0] else { return }
             let y = -CGFloat(coordinate.0) * CGFloat(len + delta)
             let x = CGFloat(coordinate.1) * CGFloat(len + delta)
             if let node = getNode(number: number) {
-                node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: 1))
-                //board.swapNumber(numberFrom: number, numberTo: 0)
+                node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: duration))
             }
         }
         self.board = board

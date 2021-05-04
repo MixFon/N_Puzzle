@@ -26,13 +26,28 @@ class Board: Equatable {
     }
     
     // MARK: Создание доски-решения.
-    init(size: Int) {
+    init(size: Int, type: TypePuzzle) {
         self.size = size
         self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
         self.f = 0
         self.g = 0
-        fillBoard()
+        switch type {
+        case .classic:
+            fillBoardClassic()
+        default:
+            fillBoardSnail()
+        }
         getCoordinats()
+    }
+    
+    // MARK: Геренация новой доски сделавшей заданное поличества итераций от первоначального состояния.
+    convenience init(size: Int, iterations: Int, type: TypePuzzle) {
+        self.init(size: size, type: type)
+        for _ in 0...iterations {
+            let neighbors = getNeighbors(number: 0)
+            guard let randomElement = neighbors.randomElement() else { continue }
+            swapNumber(numberFrom: randomElement, numberTo: 0)
+        }
     }
     
     // MARK: Конструктор копирования.
@@ -43,6 +58,17 @@ class Board: Equatable {
         self.g = board.g + 1
         self.parent = board
         self.coordinats = board.coordinats
+    }
+    
+    func valueString() -> String {
+        var result = "\(self.size)\n"
+        for row in self.matrix {
+            for element in row {
+                result += String(format: "%03.2d", element)
+            }
+            result.append("\n")
+        }
+        return result
     }
     
     // MARK: Устанавливает значение f
@@ -77,8 +103,20 @@ class Board: Equatable {
         return result
     }
     
-    // MARK: Заполняет доску по спирали.
-    private func fillBoard() {
+    // MARK: Заполняет доску класическим способом.
+    private func fillBoardClassic() {
+        var iter:Int16 = 1
+        for i in 0..<self.size {
+            for j in 0..<self.size {
+                self.matrix[i][j] = iter
+                iter += 1
+            }
+        }
+        self.matrix[self.size - 1][self.size - 1] = 0
+    }
+    
+    // MARK: Заполняет доску по спирали Snail.
+    private func fillBoardSnail() {
         var filler: Int16 = 1
         for i in 0..<self.size {
             self.matrix[0][i] = filler
@@ -170,7 +208,7 @@ class Board: Equatable {
         }
     }
     
-    // MARK: Меняет местами номер и пустую клетку местами.
+    // MARK: Меняет местами номер и пустую клетку местами. form - от куда, to - в какие место.
     func swapNumber(numberFrom: Int16, numberTo: Int16) {
         let coordinatsFrom = getCoordinatsNumber(number: numberFrom)
         let coordinatsTo = getCoordinatsNumber(number: numberTo)
