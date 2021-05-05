@@ -30,19 +30,19 @@ class Puzzle {
     }
     
     // MARK: Поиск решения используя алгоритм A*
-    func searchSolutionWithHeap() -> Board? {
+    func searchSolutionWithHeap() -> (Board, Int, Int)? {
         let heap = Heap()
         var complexityTime = 0
         self.board!.setF(heuristic: self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats))
         heap.push(board: self.board!)
-        while !heap.isEmpty() {
+        while !heap.isEmpty() && complexityTime < 0x1E8480 {
             let board = heap.pop()
             if board == self.boardTarget! {
-                printPath(board: board)
+                //printPath(board: board)
                 print("Complexity in time:", complexityTime)
                 print("Complexity in size:", self.close.count)
                 print("States to solution:", board.g)
-                return board
+                return (board, complexityTime, self.close.count)
             }
             let neighbors = board.getNeighbors(number: 0)
             let children = getChildrens(neighbors: neighbors, board: board)

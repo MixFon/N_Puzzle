@@ -7,7 +7,7 @@
 
 import Cocoa
 
-class LeftVC: NSViewController {
+class SettingsVC: NSViewController {
     
     @IBOutlet weak var statusSolution: NSTextField!
     @IBOutlet weak var text: NSScrollView!
@@ -17,6 +17,9 @@ class LeftVC: NSViewController {
     @IBOutlet weak var lableTargetMultiLine: NSTextField!
     @IBOutlet weak var lableTarget: NSTextField!
     @IBOutlet weak var segment: NSSegmentedControl!
+    @IBOutlet weak var complexityTime: NSTextField!
+    @IBOutlet weak var complexitySize: NSTextField!
+    @IBOutlet weak var stateToSolution: NSTextField!
     
     weak var gameVC: GameViewController?
     var puzzle: Puzzle?
@@ -34,7 +37,7 @@ class LeftVC: NSViewController {
         readPuzzle()
     }
     
-    // MARK: Нажатие на степер.
+    // MARK: Нажатие на степер. Изменение времени движения одного кубика.
     @IBAction func buttonStepper(_ sender: NSStepper) {
         guard let gameVC = self.gameVC else { return }
         let duration = sender.doubleValue / 10
@@ -42,18 +45,27 @@ class LeftVC: NSViewController {
         gameVC.duraction = duration
     }
     
-    // MARK: Отображение состояния-решения. Классичекие или улитка.
+    // MARK: Отображение состояния-решения. Классичекие или улитка. Очищает поле ввода головоломки.
     @IBAction func buttonSegment(_ sender: NSSegmentedControl) {
         guard let gameVC = self.gameVC else { return }
-        guard let textView : NSTextView = text?.documentView as? NSTextView else { return }
-        textView.string.removeAll()
+        clearTextView()
         let boardTarget = updateLableTargetMultiply(sender)
+        gameVC.board = boardTarget
+        gameVC.size = boardTarget.size
         if self.puzzle == nil {
             self.puzzle = Puzzle(type: self.type)
+            gameVC.viewDidLoad()
+        } else {
+            gameVC.animateNewBoard(board: boardTarget)
         }
         self.puzzle?.board = boardTarget
         self.puzzle?.boardTarget = Board(size: self.size, type: self.type)
-        gameVC.animateNewBoard(board: boardTarget)
+    }
+    
+    // MARK: Очищает самое нижнее текстовое поле, в которое вписывается новая доска.
+    private func clearTextView() {
+        guard let textView : NSTextView = text?.documentView as? NSTextView else { return }
+        textView.string.removeAll()
     }
     
     // MARK: Обновление доски целию, согласно действующим настройкам.
@@ -61,8 +73,10 @@ class LeftVC: NSViewController {
         switch sender.indexOfSelectedItem {
         case 0:
             self.type = .snail
-        default:
+        case 1:
             self.type = .classic
+        default:
+            self.type = .snake
         }
         lableTarget.stringValue = self.type.rawValue
         let boardTarget = Board(size: self.size, type: self.type)
@@ -82,7 +96,7 @@ class LeftVC: NSViewController {
         default:
             self.size = 4
         }
-        let board = Board(size: self.size,type: self.type)
+        let board = Board(size: self.size, type: self.type)
         setStatusString(color: .green, status: "This is the solution.")
         if gameVC.board == nil || gameVC.board?.size != board.size {
             gameVC.board = board
@@ -93,7 +107,28 @@ class LeftVC: NSViewController {
         }
         self.puzzle?.board = board
         self.puzzle?.boardTarget = Board(size: self.size,type: self.type)
+        clearTextView()
         _ = updateLableTargetMultiply(self.segment)
+    }
+    
+    // MARK: Установка настроек перед поиском решений
+    private func setingsBeforeSolution() {
+        self.indicator.isHidden = false
+        self.indicator.startAnimation(nil)
+        self.gameVC?.movingPazzle = false
+        self.complexityTime.stringValue = String(0)
+        self.complexitySize.stringValue = String(0)
+        self.stateToSolution.stringValue = String(0)
+    }
+    
+    // MARK: Установка настроек после поиска решений
+    private func setingsAfterSolution(solution: (Board, Int, Int)) {
+        self.complexityTime.stringValue = String(solution.1)
+        self.complexitySize.stringValue = String(solution.2)
+        self.stateToSolution.stringValue = String(solution.0.g)
+        self.indicator.stopAnimation(nil)
+        self.indicator.isHidden = true
+        self.gameVC?.movingPazzle = true
     }
     
     // MARK: Решить головоломку, на основании текущего состояния доски.
@@ -105,16 +140,20 @@ class LeftVC: NSViewController {
             setStatusString(color: .red, status: "Has no solution.")
             return
         }
-        self.indicator.isHidden = false
-        self.indicator.startAnimation(nil)
+        setingsBeforeSolution()
         let queue = DispatchQueue.global(qos: .utility)
         queue.async {
+            let main = DispatchQueue.main
             guard let solution = puzzle.searchSolutionWithHeap() else {
-                self.systemError(massage: "The solution takes a long time.")
+                main.async {
+                    self.systemError(massage: "The solution takes a long time.")
+                    self.indicator.stopAnimation(nil)
+                    self.indicator.isHidden = true
+                }
                 return
             }
             var boards = [Board]()
-            var iter: Board? = solution
+            var iter: Board? = solution.0
             while iter != nil {
                 boards.insert(iter!, at: 0)
                 iter = iter?.parent
@@ -125,11 +164,9 @@ class LeftVC: NSViewController {
                 let coordinatZero = board.getCoordinatsNumber(number: 0)
                 coordinats.append((Int(coordinatZero.1 * 5), Int(coordinatZero.0 * (-5))))
             }
-            let main = DispatchQueue.main
             main.async {
-                self.indicator.stopAnimation(nil)
-                self.indicator.isHidden = true
                 gameVC.moveAllNumbers(positions: coordinats)
+                self.setingsAfterSolution(solution: solution)
             }
         }
     }
@@ -137,7 +174,7 @@ class LeftVC: NSViewController {
     // MARK: Генерирует новую головоломку.
     @IBAction func buttonGenerate(_ sender: Any) {
         guard let textView : NSTextView = text?.documentView as? NSTextView else { return }
-        let board = Board(size: self.size, iterations: 110, type: self.type)
+        let board = Board(size: self.size, iterations: 130, type: self.type)
         textView.string = board.valueString()
         readPuzzle()
     }
@@ -153,7 +190,7 @@ class LeftVC: NSViewController {
             }
             let puzzle = try Puzzle(text: text, type: self.type)
             guard let board = puzzle.board else { return }
-            if board.size > 4 || board.size < 3 {
+            if board.size < 3 || board.size > 4 {
                 throw Exception(massage: "Invalid size.")
             }
             setStatusString(color: .green, status: "Has a solution.")
@@ -162,6 +199,8 @@ class LeftVC: NSViewController {
                 gameVC.size = board.size
                 gameVC.viewDidLoad()
             } else {
+                gameVC.board = board
+                gameVC.size = board.size
                 gameVC.animateNewBoard(board: board)
             }
             self.size = board.size
@@ -187,7 +226,7 @@ class LeftVC: NSViewController {
         //setStatusString(color: .red, status: massage)
         let alert = NSAlert()
         alert.messageText = massage
-        //alert.alertStyle =
+        alert.alertStyle = .critical
         alert.addButton(withTitle: "OK")
         alert.runModal()
     }

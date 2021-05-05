@@ -13,7 +13,7 @@ class SplitVC: NSSplitViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let left = leftVC.viewController as? LeftVC {
+        if let left = leftVC.viewController as? SettingsVC {
             left.gameVC = gameVC.viewController as? GameViewController
         }
     }

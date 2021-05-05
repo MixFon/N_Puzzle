@@ -16,13 +16,14 @@ class GameViewController: NSViewController {
     var len: Int?
     var delta: Int?
     var duraction: TimeInterval?
-    //var nodes: [SCNNode]?
+    var movingPazzle: Bool?
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         self.len = 4
         self.delta = 3
         self.duraction = 0.5
+        self.movingPazzle = true
     }
     
     override func viewDidLoad() {
@@ -145,9 +146,11 @@ class GameViewController: NSViewController {
             let coordinate = (Int(position.x), Int(position.y))
             //print(position)
             var actions = [SCNAction]()
-            if moveNumber(actions: &actions, position: coordinate) {
-                let sequence = SCNAction.sequence(actions)
-                SCNNode().runAction(sequence)
+            if self.movingPazzle == true && moveNumber(actions: &actions, position: coordinate) {
+                if let node = self.scene?.rootNode.childNodes.first {
+                    let sequence = SCNAction.sequence(actions)
+                    node.runAction(sequence)
+                }
                 return
             }
         
@@ -175,13 +178,16 @@ class GameViewController: NSViewController {
     }
     
     // MARK: Перемещает все кубики поочереди на пустое место.
+    /// Попровить перемещение при одном нажатии
     func moveAllNumbers(positions: [(Int, Int)]) {
         var actions = [SCNAction]()
         for position in positions {
             _ = moveNumber(actions: &actions, position: position)
         }
-        let sequence = SCNAction.sequence(actions)
-        SCNNode().runAction(sequence)
+        if let node = self.scene?.rootNode.childNodes.first {
+            let sequence = SCNAction.sequence(actions)
+            node.runAction(sequence)
+        }
     }
     
     // MARK: Перемещает кубик в заданную координату. (На пустое место)
@@ -202,19 +208,20 @@ class GameViewController: NSViewController {
                     //node.position = SCNVector3(x: x, y: y, z: 0)
                     node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: duration))
                     //SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: 0.5)
+                    
                 })
                 actions.append(action)
                 //print(actions.count)
                 //node.runAction(SCNAction.move(to: SCNVector3(x: x, y: y, z: 0), duration: 0.5))
                 board.swapNumber(numberFrom: number, numberTo: 0)
-                node.runAction(SCNAction.sequence(actions))
+                //node.runAction(SCNAction.sequence(actions))
                 return true
             }
         }
         return false
     }
     
-    // Возвращет узел с указанным номером.
+    //MARK: Возвращет узел с указанным номером. Номер соответствует имени картинки.
     private func getNode(number: Int16) -> SCNNode? {
         guard let nodes = self.scene?.rootNode.childNodes else { return nil }
         for node in nodes {
@@ -227,6 +234,7 @@ class GameViewController: NSViewController {
         return nil
     }
     
+    // MARK: Все кубики возвращаются на места-цели согласно boardTarget
     func animateNewBoard(board: Board) {
         guard let len = self.len else { return }
         guard let delta = self.delta else { return }

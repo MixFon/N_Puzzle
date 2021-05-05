@@ -13,7 +13,7 @@ class Board: Equatable {
     var coordinats = [Int16: (Int8, Int8)]()
     var f: Int
     var g: Int
-    weak var parent: Board?
+    var parent: Board?
     
     // MARK: Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int16]]) throws {
@@ -34,8 +34,10 @@ class Board: Equatable {
         switch type {
         case .classic:
             fillBoardClassic()
-        default:
+        case .snail:
             fillBoardSnail()
+        default:
+            fillBoardSnake()
         }
         getCoordinats()
     }
@@ -61,7 +63,7 @@ class Board: Equatable {
     }
     
     func valueString() -> String {
-        var result = "\(self.size)\n"
+        var result = " \(self.size)\n"
         for row in self.matrix {
             for element in row {
                 result += String(format: "%03.2d", element)
@@ -113,6 +115,16 @@ class Board: Equatable {
             }
         }
         self.matrix[self.size - 1][self.size - 1] = 0
+    }
+    
+    // MARK: Заполняет доску в виде змейки.
+    private func fillBoardSnake() {
+        fillBoardClassic()
+        for i in 0..<self.size {
+            if i % 2 != 0 {
+                self.matrix[i].reverse()
+            }
+        }
     }
     
     // MARK: Заполняет доску по спирали Snail.
