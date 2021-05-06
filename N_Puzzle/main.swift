@@ -7,6 +7,6 @@
 
 import Foundation
 
-print("Welcom to N-Pazzle!")
-let pazzle = Pazzle()
-pazzle.run()
+print("Welcom to N-Puzzle!")
+let puzzle = Puzzle()
+puzzle.run()

@@ -13,7 +13,7 @@ class Board: Equatable {
     var coordinats = [Int16: (Int8, Int8)]()
     var f: Int
     var g: Int
-    weak var parent: Board?
+    var parent: Board?
     
     // MARK: Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int16]]) throws {

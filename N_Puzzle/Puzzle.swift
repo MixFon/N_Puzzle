@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Pazzle {
+class Puzzle {
     
     var fileName: String?
     var heuristic: Heuristic?
@@ -34,7 +34,7 @@ class Pazzle {
         }
     }
     
-    // MARK: Поиск решения используя алгоритм A*
+    // MARK: Поиск решения, используя алгоритм A*
     private func searchSolutionWithHeap() {
         let heap = Heap()
         var complexityTime = 0
@@ -79,6 +79,7 @@ class Pazzle {
         }
     }
     
+    // MARK: Возвращает количество инвариантов.
     private func getSummInversion(matrix: [[Int16]]) -> Int {
         var summ = 0
         var arry = [Int16]()
@@ -151,7 +152,7 @@ class Pazzle {
         guard let sizeBoard = size else {
             throw Exception(massage: "Invalid data.")
         }
-        if arr.count != sizeBoard || arr.count <= 0 {
+        if arr.count != sizeBoard || arr.count <= 2 {
             throw Exception(massage: "The board size is set incorrectly.")
         }
         let board = try Board(size: sizeBoard, matrix: arr)

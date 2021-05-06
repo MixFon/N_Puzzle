@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		291D5BE9263056D700342374 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BE8263056D700342374 /* main.swift */; };
-		291D5BF12630593300342374 /* Pazzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BF02630593300342374 /* Pazzle.swift */; };
+		291D5BF12630593300342374 /* Puzzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BF02630593300342374 /* Puzzle.swift */; };
 		291D5BF826305F7500342374 /* Exception.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BF726305F7500342374 /* Exception.swift */; };
 		291D5BFB2630647000342374 /* Heuristic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BFA2630647000342374 /* Heuristic.swift */; };
 		291D5BFE26307F0400342374 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291D5BFD26307F0400342374 /* Board.swift */; };
@@ -30,7 +30,7 @@
 /* Begin PBXFileReference section */
 		291D5BE5263056D700342374 /* N_Puzzle */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = N_Puzzle; sourceTree = BUILT_PRODUCTS_DIR; };
 		291D5BE8263056D700342374 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
-		291D5BF02630593300342374 /* Pazzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pazzle.swift; sourceTree = "<group>"; };
+		291D5BF02630593300342374 /* Puzzle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Puzzle.swift; sourceTree = "<group>"; };
 		291D5BF726305F7500342374 /* Exception.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exception.swift; sourceTree = "<group>"; };
 		291D5BFA2630647000342374 /* Heuristic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Heuristic.swift; sourceTree = "<group>"; };
 		291D5BFD26307F0400342374 /* Board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
@@ -68,7 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				291D5BE8263056D700342374 /* main.swift */,
-				291D5BF02630593300342374 /* Pazzle.swift */,
+				291D5BF02630593300342374 /* Puzzle.swift */,
 				291D5BF726305F7500342374 /* Exception.swift */,
 				291D5BFA2630647000342374 /* Heuristic.swift */,
 				291D5BFD26307F0400342374 /* Board.swift */,
@@ -139,7 +139,7 @@
 				29C871EF2635ACCF0022605C /* Heap.swift in Sources */,
 				291D5BFE26307F0400342374 /* Board.swift in Sources */,
 				291D5BFB2630647000342374 /* Heuristic.swift in Sources */,
-				291D5BF12630593300342374 /* Pazzle.swift in Sources */,
+				291D5BF12630593300342374 /* Puzzle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
