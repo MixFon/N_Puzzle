@@ -45,10 +45,17 @@ class Board: Equatable {
     // MARK: Геренация новой доски сделавшей заданное поличества итераций от первоначального состояния.
     convenience init(size: Int, iterations: Int, type: TypePuzzle) {
         self.init(size: size, type: type)
+        var previeos: Int16 = 0
         for _ in 0...iterations {
-            let neighbors = getNeighbors(number: 0)
-            guard let randomElement = neighbors.randomElement() else { continue }
-            swapNumber(numberFrom: randomElement, numberTo: 0)
+            while true {
+                let neighbors = getNeighbors(number: 0)
+                guard let randomElement = neighbors.randomElement() else { break }
+                if previeos != randomElement {
+                    swapNumber(numberFrom: randomElement, numberTo: 0)
+                    previeos = randomElement
+                    break
+                }
+            }
         }
     }
     

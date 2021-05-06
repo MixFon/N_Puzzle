@@ -20,6 +20,13 @@ class SettingsVC: NSViewController {
     @IBOutlet weak var complexityTime: NSTextField!
     @IBOutlet weak var complexitySize: NSTextField!
     @IBOutlet weak var stateToSolution: NSTextField!
+    @IBOutlet weak var lableIteration: NSTextField!
+    
+    @IBOutlet weak var buttonGenerate: NSButton!
+    @IBOutlet weak var buttonReadPuzzle: NSButton!
+    @IBOutlet weak var buttonSolvePuzzle: NSButton!
+    @IBOutlet weak var buttonSegments: NSSegmentedCell!
+    
     
     weak var gameVC: GameViewController?
     var puzzle: Puzzle?
@@ -87,6 +94,7 @@ class SettingsVC: NSViewController {
     // MARK: Выбор размера головоломки 3 или 4
     @IBAction func buttonMenu(_ sender: NSPopUpButton) {
         guard let gameVC = self.gameVC else { return }
+        guard gameVC.movingPazzle == true else { return }
         if self.puzzle == nil {
             self.puzzle = Puzzle(type: self.type)
         }
@@ -111,11 +119,20 @@ class SettingsVC: NSViewController {
         _ = updateLableTargetMultiply(self.segment)
     }
     
+    // MARK: Установка отображения количества итерация при генерации новой головоломки
+    @IBAction func buttonStepperIteration(_ sender: NSStepper) {
+        self.lableIteration.stringValue = sender.stringValue
+    }
+    
     // MARK: Установка настроек перед поиском решений
     private func setingsBeforeSolution() {
         self.indicator.isHidden = false
         self.indicator.startAnimation(nil)
         self.gameVC?.movingPazzle = false
+        self.buttonSegments.isEnabled = false
+        self.buttonGenerate.isEnabled = false
+        self.buttonReadPuzzle.isEnabled = false
+        self.buttonSolvePuzzle.isEnabled = false
         self.complexityTime.stringValue = String(0)
         self.complexitySize.stringValue = String(0)
         self.stateToSolution.stringValue = String(0)
@@ -129,6 +146,10 @@ class SettingsVC: NSViewController {
         self.indicator.stopAnimation(nil)
         self.indicator.isHidden = true
         self.gameVC?.movingPazzle = true
+        self.buttonSegments.isEnabled = true
+        self.buttonGenerate.isEnabled = true
+        self.buttonReadPuzzle.isEnabled = true
+        self.buttonSolvePuzzle.isEnabled = true
     }
     
     // MARK: Решить головоломку, на основании текущего состояния доски.
@@ -174,7 +195,8 @@ class SettingsVC: NSViewController {
     // MARK: Генерирует новую головоломку.
     @IBAction func buttonGenerate(_ sender: Any) {
         guard let textView : NSTextView = text?.documentView as? NSTextView else { return }
-        let board = Board(size: self.size, iterations: 130, type: self.type)
+        guard let iterations = Int(self.lableIteration.stringValue) else { return }
+        let board = Board(size: self.size, iterations: iterations, type: self.type)
         textView.string = board.valueString()
         readPuzzle()
     }
