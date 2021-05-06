@@ -38,7 +38,7 @@ class Heap {
         balancingUp(index: parent)
     }
     
-    // MARK: Балансировка кучи вниз от родительского к дочекним.
+    // MARK: Балансировка кучи вниз от родительского к дочерним.
     private func balancingDown(parent: Int) {
         if let leftIndex = getIndexLeft(index: parent) {
             if self.elements[parent].f > self.elements[leftIndex].f {

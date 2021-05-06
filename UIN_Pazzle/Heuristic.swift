@@ -43,7 +43,7 @@ enum Heuristic: String {
         return Int(abs(coordinats.0 - coordinatsTarget.0) + abs(coordinats.1 - coordinatsTarget.1))
     }
     
-    // MARK: Эвристика растояния Чебышева.
+    // MARK: Эвристика расстояния Чебышева.
     private func chebyshevDistance(coordinats: (Int8, Int8), coordinatsTarget: (Int8, Int8)) -> Int {
         return Int(max(abs(coordinats.0 - coordinatsTarget.0), abs(coordinats.1 - coordinatsTarget.1)))
     }

@@ -27,7 +27,6 @@ class SettingsVC: NSViewController {
     @IBOutlet weak var buttonSolvePuzzle: NSButton!
     @IBOutlet weak var buttonSegments: NSSegmentedCell!
     
-    
     weak var gameVC: GameViewController?
     var puzzle: Puzzle?
     var type: TypePuzzle
@@ -179,7 +178,6 @@ class SettingsVC: NSViewController {
                 boards.insert(iter!, at: 0)
                 iter = iter?.parent
             }
-            //boards.forEach( { $0.print() } )
             var coordinats = [(Int, Int)]()
             for board in boards[1...] {
                 let coordinatZero = board.getCoordinatsNumber(number: 0)
@@ -240,12 +238,9 @@ class SettingsVC: NSViewController {
         statusSolution.textColor = color
         statusSolution.stringValue = status
     }
-    
-    
-    // MARK: Вывод сообщения об ошибке в поток ошибок
+
+    // MARK: Создание всплывающего окна для вывода в ней ошибки.
     private func systemError(massage: String) {
-        //statusSolution.isHidden = false
-        //setStatusString(color: .red, status: massage)
         let alert = NSAlert()
         alert.messageText = massage
         alert.alertStyle = .critical

@@ -25,7 +25,7 @@ class Board: Equatable {
         getCoordinats()
     }
     
-    // MARK: Создание доски-решения.
+    // MARK: Создание доски-решения указанного типа
     init(size: Int, type: TypePuzzle) {
         self.size = size
         self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
@@ -42,7 +42,7 @@ class Board: Equatable {
         getCoordinats()
     }
     
-    // MARK: Геренация новой доски сделавшей заданное поличества итераций от первоначального состояния.
+    // MARK: Геренация новой доски сделавшей заданное количества итераций от первоначального состояния.
     convenience init(size: Int, iterations: Int, type: TypePuzzle) {
         self.init(size: size, type: type)
         var previeos: Int16 = 0
@@ -69,6 +69,7 @@ class Board: Equatable {
         self.coordinats = board.coordinats
     }
     
+    // MARK: Возвращет головоломку в виде строки
     func valueString() -> String {
         var result = " \(self.size)\n"
         for row in self.matrix {
@@ -91,7 +92,7 @@ class Board: Equatable {
         return coordinats
     }
     
-    // MARK: Возвращает номера соседних ячеек.
+    // MARK: Возвращает номера соседних ячеек с number.
     func getNeighbors(number: Int16) -> [Int16] {
         var result = [Int16]()
         guard let coordinats = self.coordinats[number] else {
@@ -112,7 +113,7 @@ class Board: Equatable {
         return result
     }
     
-    // MARK: Заполняет доску класическим способом.
+    // MARK: Заполняет доску классическим способом Classic.
     private func fillBoardClassic() {
         var iter:Int16 = 1
         for i in 0..<self.size {
@@ -124,7 +125,7 @@ class Board: Equatable {
         self.matrix[self.size - 1][self.size - 1] = 0
     }
     
-    // MARK: Заполняет доску в виде змейки.
+    // MARK: Заполняет доску в виде змейки Snake.
     private func fillBoardSnake() {
         fillBoardClassic()
         for i in 0..<self.size {
@@ -160,7 +161,7 @@ class Board: Equatable {
         fillSquare(filler: filler)
     }
     
-    // MARK: Заполняет внутренюю часть квадрата.
+    // MARK: Заполняет внутренюю часть квадрата для Snail.
     private func fillSquare(filler: Int16) {
         var filler = filler
         let end = self.size * self.size
@@ -190,7 +191,7 @@ class Board: Equatable {
         }
     }
     
-    // MARK: Производит проверку доски. Элементы должны быть уникальны.
+    // MARK: Производит проверку доски на уникальность элементов.
     private func checkBoard() throws {
         let elements = Set<Int>(0...(self.size * self.size - 1))
         var elementsBoard = Set<Int>()

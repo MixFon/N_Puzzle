@@ -19,17 +19,15 @@ class Puzzle {
         self.heuristic = .manhattan
         self.type = type
         self.close = [Int: Board]()
-        //searchSolutionWithHeap()
     }
     
     convenience init(text: String, type: TypePuzzle) throws {
         self.init(type: type)
         try creationBouard(text: text)
         try checkSolution()
-        //searchSolutionWithHeap()
     }
     
-    // MARK: Поиск решения используя алгоритм A*
+    // MARK: Поиск решения, используя алгоритм A*. Стоит ограничение на 2*10^6 проссмотренных узлов.
     func searchSolutionWithHeap() -> (Board, Int, Int)? {
         let heap = Heap()
         var complexityTime = 0
@@ -38,10 +36,6 @@ class Puzzle {
         while !heap.isEmpty() && complexityTime < 0x1E8480 {
             let board = heap.pop()
             if board == self.boardTarget! {
-                //printPath(board: board)
-                print("Complexity in time:", complexityTime)
-                print("Complexity in size:", self.close.count)
-                print("States to solution:", board.g)
                 return (board, complexityTime, self.close.count)
             }
             let neighbors = board.getNeighbors(number: 0)
@@ -85,6 +79,7 @@ class Puzzle {
         return true
     }
     
+    // MARK: Возврящет сумму инверсий. Инверсия - пара чисел, в которее число стоит перед большим.
     private func getSummInversion(matrix: [[Int16]]) -> Int {
         var summ = 0
         var arry = [Int16]()
@@ -105,6 +100,7 @@ class Puzzle {
         return summ
     }
     
+    // MARK: Выводит полный путь решения головоломки.
     private func printPath(board: Board) {
         var next: Board? = board
         while next != nil {
@@ -128,7 +124,7 @@ class Puzzle {
         return childrens
     }
     
-    // MARK: Проверяет не находится ли номер на своем месте.
+    // MARK: Проверяет находится ли номер на своем месте (относительно решения)
     private func isLocal(number: Int16, board: Board) -> Bool {
         let coordinatsNumber = board.getCoordinatsNumber(number: number)
         let coordinatsTarget = self.boardTarget!.getCoordinatsNumber(number: number)
@@ -151,7 +147,7 @@ class Puzzle {
             case 2... where words.count == size:
                 arr.append(words)
             default:
-                throw Exception(massage: "Invalid data: \(line) in \(lines)")
+                throw Exception(massage: "Invalid data: \(line)")
             }
         }
         guard let sizeBoard = size else {
@@ -166,7 +162,7 @@ class Puzzle {
         self.boardTarget = boardTarget
     }
     
-    // Создает на основе строки массив целочисленных элементов.
+    // MARK: Создает на основе строки чисел массив целочисленных элементов.
     private func getWords(data: String) throws -> [Int16] {
         let words = data.split() { $0 == " "}.map { String($0) }
         if words.isEmpty {
