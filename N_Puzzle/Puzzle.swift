@@ -13,7 +13,7 @@ class Puzzle {
     var heuristic: Heuristic?
     var boardTarget: Board?
     var board: Board?
-    var close = [Int: Board]()
+    var close = Set<Int>()
     
     func run() {
         do {
@@ -55,7 +55,7 @@ class Puzzle {
                 heap.push(board: board)
                 complexityTime += 1
             }
-            self.close[board.matrix.hashValue] = board
+            self.close.insert(board.matrix.hashValue)
         }
         print("The Pazzle has no solution.")
     }
@@ -116,7 +116,7 @@ class Puzzle {
             newBoard.swapNumber(number: number)
             let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
             newBoard.setF(heuristic: heuristic)
-            if (self.close[newBoard.matrix.hashValue] == nil) {
+            if !self.close.contains(newBoard.matrix.hashValue) {
                 childrens.append(newBoard)
             }
         }
