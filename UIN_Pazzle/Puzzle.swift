@@ -12,13 +12,13 @@ class Puzzle {
     var heuristic: Heuristic?
     var boardTarget: Board?
     var board: Board?
-    var close: [Int: Board]
+    var close: Set<Int>
     var type: TypePuzzle
     
     init(type: TypePuzzle) {
         self.heuristic = .manhattan
         self.type = type
-        self.close = [Int: Board]()
+        self.close = Set<Int>()
     }
     
     convenience init(text: String, type: TypePuzzle) throws {
@@ -44,7 +44,7 @@ class Puzzle {
                 heap.push(board: board)
                 complexityTime += 1
             }
-            self.close[board.matrix.hashValue] = board
+            self.close.insert(board.matrix.hashValue)
         }
         print("The Pazzle has no solution.")
         return nil
@@ -117,7 +117,7 @@ class Puzzle {
             newBoard.swapNumber(numberFrom: number, numberTo: 0)
             let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
             newBoard.setF(heuristic: heuristic)
-            if (self.close[newBoard.matrix.hashValue] == nil) {
+            if !self.close.contains(newBoard.matrix.hashValue) {
                 childrens.append(newBoard)
             }
         }
