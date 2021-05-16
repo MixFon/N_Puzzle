@@ -22,7 +22,7 @@ class GameViewController: NSViewController {
         super.init(coder: coder)
         self.len = 4
         self.delta = 3
-        self.duraction = 0.5
+        self.duraction = 0.2
         self.movingPazzle = true
     }
     

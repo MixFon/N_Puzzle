@@ -170,7 +170,7 @@
                             </textField>
                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zXc-jI-5nw">
                                 <rect key="frame" x="77" y="370" width="19" height="28"/>
-                                <stepperCell key="cell" continuous="YES" alignment="left" maxValue="10" doubleValue="5" valueWraps="YES" id="VYF-Te-64A"/>
+                                <stepperCell key="cell" continuous="YES" alignment="left" maxValue="5" doubleValue="2" valueWraps="YES" id="VYF-Te-64A"/>
                                 <connections>
                                     <action selector="buttonStepper:" target="zFj-CQ-1vS" id="5nd-vT-eMO"/>
                                 </connections>
@@ -337,14 +337,14 @@
                             </stackView>
                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="6h3-kk-yna">
                                 <rect key="frame" x="118" y="411" width="19" height="28"/>
-                                <stepperCell key="cell" continuous="YES" alignment="left" increment="5" maxValue="100" doubleValue="50" id="sWx-gi-KyV"/>
+                                <stepperCell key="cell" continuous="YES" alignment="left" increment="10" maxValue="300" doubleValue="150" id="sWx-gi-KyV"/>
                                 <connections>
                                     <action selector="buttonStepperIteration:" target="zFj-CQ-1vS" id="Vxk-Dk-XAf"/>
                                 </connections>
                             </stepper>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="r4f-2a-fWh">
-                                <rect key="frame" x="142" y="417" width="21" height="16"/>
-                                <textFieldCell key="cell" lineBreakMode="clipping" title="50" id="sqj-Ik-1MN">
+                                <rect key="frame" x="142" y="417" width="27" height="16"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="150" id="sqj-Ik-1MN">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

@@ -13,7 +13,6 @@ class Board: Equatable {
     var coordinats = [Int16: (Int8, Int8)]()
     var f: Int
     var g: Int
-    //var parent: Board?
     var path: [Direction]
     
     // MARK: Создание доски на основе матрицы и размера
@@ -68,7 +67,6 @@ class Board: Equatable {
         self.matrix = board.matrix
         self.f = board.f
         self.g = board.g + 1
-        //self.parent = board
         self.coordinats = board.coordinats
         self.path = board.path
     }
@@ -87,8 +85,11 @@ class Board: Equatable {
     
     // MARK: Устанавливает значение f
     func setF(heuristic: Int) {
-        //self.f = self.g + heuristic
-        self.f = heuristic
+        if self.size == 3 {
+            self.f = self.g + heuristic
+        } else {
+            self.f = heuristic
+        }
     }
     
     // MARK: Возвращает координаты ячейки с номером.
