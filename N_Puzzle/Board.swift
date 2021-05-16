@@ -47,7 +47,11 @@ class Board: Equatable {
     
     // MARK: Устанавливает значение f
     func setF(heuristic: Int) {
-        self.f = self.g + heuristic
+        if self.size == 3 {
+            self.f = self.g + heuristic
+        } else {
+            self.f = heuristic
+        }
     }
     
     // MARK: Возвращает координаты ячейки с номером.
