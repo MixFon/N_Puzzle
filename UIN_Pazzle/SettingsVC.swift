@@ -172,17 +172,19 @@ class SettingsVC: NSViewController {
                 }
                 return
             }
-            var boards = [Board]()
-            var iter: Board? = solution.0
-            while iter != nil {
-                boards.insert(iter!, at: 0)
-                iter = iter?.parent
-            }
-            var coordinats = [(Int, Int)]()
-            for board in boards[1...] {
-                let coordinatZero = board.getCoordinatsNumber(number: 0)
-                coordinats.append((Int(coordinatZero.1 * 5), Int(coordinatZero.0 * (-5))))
-            }
+            let coordinats = solution.0.getCoordinatePathSolueion()
+//            var boards = [Board]()
+//            var iter: Board? = solution.0
+//            while iter != nil {
+//                boards.insert(iter!, at: 0)
+//                iter = iter?.parent
+//            }
+//            for board in boards[1...] {
+//                let coordinatZero = board.getCoordinatsNumber(number: 0)
+//                //coordinats.append((Int(coordinatZero.1 * 5), Int(coordinatZero.0 * (-5))))
+//            }
+//            print(coordinats)
+//            //print()
             main.async {
                 gameVC.moveAllNumbers(positions: coordinats)
                 self.setingsAfterSolution(solution: solution)

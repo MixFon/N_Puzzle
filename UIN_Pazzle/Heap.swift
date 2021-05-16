@@ -27,7 +27,7 @@ class Heap {
     }
     
     // MARK: Балансировка кучи вверх от дочернего узла к родителю.
-    private func balancingUp(index: Int) {
+    func balancingUp(index: Int) {
         if index == 0 { return }
         let parent = getParent(index: index)
         if self.elements[parent].f > self.elements[index].f {
@@ -39,7 +39,7 @@ class Heap {
     }
     
     // MARK: Балансировка кучи вниз от родительского к дочерним.
-    private func balancingDown(parent: Int) {
+    func balancingDown(parent: Int) {
         if let leftIndex = getIndexLeft(index: parent) {
             if self.elements[parent].f > self.elements[leftIndex].f {
                 self.elements.swapAt(parent, leftIndex)

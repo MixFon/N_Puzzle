@@ -13,7 +13,8 @@ class Board: Equatable {
     var coordinats = [Int16: (Int8, Int8)]()
     var f: Int
     var g: Int
-    var parent: Board?
+    //var parent: Board?
+    var path: [Direction]
     
     // MARK: Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int16]]) throws {
@@ -21,6 +22,7 @@ class Board: Equatable {
         self.matrix = matrix
         self.f = 0
         self.g = 0
+        self.path = [Direction]()
         try checkBoard()
         getCoordinats()
     }
@@ -31,6 +33,7 @@ class Board: Equatable {
         self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
         self.f = 0
         self.g = 0
+        self.path = [Direction]()
         switch type {
         case .classic:
             fillBoardClassic()
@@ -65,8 +68,9 @@ class Board: Equatable {
         self.matrix = board.matrix
         self.f = board.f
         self.g = board.g + 1
-        self.parent = board
+        //self.parent = board
         self.coordinats = board.coordinats
+        self.path = board.path
     }
     
     // MARK: Возвращет головоломку в виде строки
@@ -83,7 +87,8 @@ class Board: Equatable {
     
     // MARK: Устанавливает значение f
     func setF(heuristic: Int) {
-        self.f = self.g + heuristic
+        //self.f = self.g + heuristic
+        self.f = heuristic
     }
     
     // MARK: Возвращает координаты ячейки с номером.
@@ -228,7 +233,7 @@ class Board: Equatable {
         }
     }
     
-    // MARK: Меняет местами номер и пустую клетку местами. form - от куда, to - в какие место.
+    // MARK: Меняет местами номер и пустую клетку местами. form - от куда, to - в какое место.
     func swapNumber(numberFrom: Int16, numberTo: Int16) {
         let coordinatsFrom = getCoordinatsNumber(number: numberFrom)
         let coordinatsTo = getCoordinatsNumber(number: numberTo)
@@ -236,6 +241,53 @@ class Board: Equatable {
         self.matrix[Int(coordinatsTo.0)][Int(coordinatsTo.1)] = numberFrom
         self.coordinats[numberFrom] = coordinatsTo
         self.coordinats[numberTo] = coordinatsFrom
+    }
+    
+    // MARK: Добавляет новое направление.
+    func addDirection(numberFrom: Int16, numberTo: Int16) {
+        let coordinatsFrom = getCoordinatsNumber(number: numberFrom)
+        let coordinatsTo = getCoordinatsNumber(number: numberTo)
+        let direction = getDirection(from: coordinatsFrom, to: coordinatsTo)
+        self.path.append(direction)
+    }
+    
+    // MARK: Возсвращает направление передвижения для отображения обратного пути.
+    private func getDirection(from: (Int8, Int8), to: (Int8, Int8)) -> Direction {
+        if from.0 == to.0 {
+            if from.1 > to.1 {
+                return .left
+            } else {
+                return .right
+            }
+        } else {
+            if from.0 > to.0 {
+                return .up
+            } else {
+                return .down
+            }
+        }
+    }
+    
+    // MARK: Возвращает путь до решения в виде координат.
+    func getCoordinatePathSolueion() -> [(Int, Int)] {
+        var coordinats = [(Int, Int)]()
+        var temp = getCoordinatsNumber(number: 0)
+        coordinats.append((Int(temp.1 * 5), Int(temp.0 * (-5))))
+        for direction in self.path.reversed() {
+            switch direction {
+            case .down:
+                temp = (temp.0 + 1, temp.1)
+            case .up:
+                temp = (temp.0 - 1, temp.1)
+            case .right:
+                temp = (temp.0, temp.1 + 1)
+            default:
+                temp = (temp.0, temp.1 - 1)
+            }
+            coordinats.append((Int(temp.1 * 5), Int(temp.0 * (-5))))
+        }
+        coordinats.removeLast()
+        return coordinats.reversed()
     }
     
     static func == (left: Board, right: Board) -> Bool {

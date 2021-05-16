@@ -13,12 +13,14 @@ class Puzzle {
     var boardTarget: Board?
     var board: Board?
     var close: Set<Int>
+    //var open: Set<Int>
     var type: TypePuzzle
     
     init(type: TypePuzzle) {
         self.heuristic = .manhattan
         self.type = type
         self.close = Set<Int>()
+        //self.open = Set<Int>()
     }
     
     convenience init(text: String, type: TypePuzzle) throws {
@@ -33,17 +35,44 @@ class Puzzle {
         var complexityTime = 0
         self.board!.setF(heuristic: self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats))
         heap.push(board: self.board!)
-        while !heap.isEmpty() && complexityTime < 0x1E8480 {
+        while !heap.isEmpty() {
             let board = heap.pop()
-            if board == self.boardTarget! {
-                return (board, complexityTime, self.close.count)
-            }
+            //self.open.remove(board.matrix.hashValue)
+//            if board == self.boardTarget! {
+//                //print(board.path)
+//                return (board, complexityTime, self.close.count)
+//            }
             let neighbors = board.getNeighbors(number: 0)
             let children = getChildrens(neighbors: neighbors, board: board)
             for board in children {
+                if board == self.boardTarget! {
+                    //print(board.path)
+                    return (board, complexityTime, self.close.count)
+                }
                 heap.push(board: board)
+//                if !self.open.contains(board.matrix.hashValue) {
+//                    self.open.insert(board.matrix.hashValue)
+//                    heap.push(board: board)
+//                    complexityTime += 1
+//                //}
+                //} else {
+//                    for (i, elem) in heap.elements.enumerated() {
+//                        if elem.matrix.hashValue == board.matrix.hashValue {
+//                            if elem.f > board.f {
+//                                heap.elements[i] = board
+//                                heap.balancingUp(index: i)
+//                                heap.balancingDown(parent: i)
+//                                print("3")
+//                            }
+//                            break
+//                        }
+//                    }
+//                }
                 complexityTime += 1
             }
+//            if let index = self.open.firstIndex(of: board.matrix.hashValue) {
+//                self.open.remove(at: index)
+//            }
             self.close.insert(board.matrix.hashValue)
         }
         print("The Pazzle has no solution.")
@@ -101,19 +130,20 @@ class Puzzle {
     }
     
     // MARK: Выводит полный путь решения головоломки.
-    private func printPath(board: Board) {
-        var next: Board? = board
-        while next != nil {
-            next?.print()
-            next = next?.parent
-        }
-    }
+//    private func printPath(board: Board) {
+//        var next: Board? = board
+//        while next != nil {
+//            next?.print()
+//            next = next?.parent
+//        }
+//    }
     
     // MARK: Возвращает список смежных состояний.
     private func getChildrens(neighbors: [Int16], board: Board) -> [Board] {
         var childrens = [Board]()
         for number in neighbors {
             let newBoard = Board(board: board)
+            newBoard.addDirection(numberFrom: number, numberTo: 0)
             newBoard.swapNumber(numberFrom: number, numberTo: 0)
             let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
             newBoard.setF(heuristic: heuristic)
