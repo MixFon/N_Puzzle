@@ -62,14 +62,21 @@
 <a href="https://www.codecogs.com/eqnedit.php?latex=\dpi{120}&space;\large&space;f(\nu&space;)=g(\nu&space;)&space;&plus;&space;h(\nu)" target="_blank"><img src="https://latex.codecogs.com/png.latex?\dpi{120}&space;\large&space;f(\nu&space;)=g(\nu&space;)&space;&plus;&space;h(\nu)" title="\large f(\nu )=g(\nu ) + h(\nu)" /></a>
 
 g(v) - количество перестановок, сделанных от стартовой вершины. (используется для жадного алгоритма)
+
 h(v) - эвристическая оценка стоимости пути. Эвристика.
+
 Для вычисления эвристики используются следующие функции:
 
 **Манхэттенское расстояние** 
+
 ![exemple manhetten](https://github.com/MixFon/N_Puzzle/blob/master/images/fkY5DZL0.png)
 
 **Расстояние Чебышева** 
+
 ![exemple cheb](https://github.com/MixFon/N_Puzzle/blob/master/images/xJmGyaY8.png)
 
 **Евклидово расстояние** 
+
 ![exemple Euckl](https://github.com/MixFon/N_Puzzle/blob/master/images/7zlYJYzs.png)
+
+Данные функции применяются к каждому элементу поля данного состояния, все значения суммируются. Функция g(v) применяется для поиска оптимального решения и для экономии времени и ресурсов компьтера используется только для расчета поля 3x3 (для полей 4x4 и больше затрачивается достаточно много времени, выше 10 минут, и большой объем оперативной памяти, от 2 Гб и выше)  
