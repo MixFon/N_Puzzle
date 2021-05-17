@@ -44,4 +44,12 @@
     git checkout UIN_Pazzle
     open UIN_Pazzle.xcodeproj
     
+    
+**Генерирование случайной головоломки и ее решение:**
 ![exemple one](https://github.com/MixFon/N_Puzzle/blob/master/images/Screen_Recording_2021-05-17_at_13.41.01.gif)
+
+**Генерирование головоломки 3x3 и его решение (жадный алгоритм)**
+![exemple two](https://github.com/MixFon/N_Puzzle/blob/master/images/Screen_Recording_2021-05-17_at_13.46.00.gif)
+
+**Своболная игра и поиск решения**
+![exemple three](https://github.com/MixFon/N_Puzzle/blob/master/images/Screen_Recording_2021-05-17_at_13.50.14.gif)
