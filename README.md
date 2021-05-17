@@ -44,4 +44,4 @@
     git checkout UIN_Pazzle
     open UIN_Pazzle.xcodeproj
     
-[exemple one](https://github.com/MixFon/N_Puzzle/blob/master/images/Screen_Recording_2021-05-17_at_13.41.01.gif)
+![exemple one](https://github.com/MixFon/N_Puzzle/blob/master/images/Screen_Recording_2021-05-17_at_13.41.01.gif)
