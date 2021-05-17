@@ -65,3 +65,11 @@ g(v) - количество перестановок, сделанных от с
 h(v) - эвристическая оценка стоимости пути. Эвристика.
 Для вычисления эвристики используются следующие функции:
 
+**Манхэттенское расстояние** 
+![exemple manhetten](https://github.com/MixFon/N_Puzzle/blob/master/images/fkY5DZL0.png)
+
+**Расстояние Чебышева** 
+![exemple cheb](https://github.com/MixFon/N_Puzzle/blob/master/images/xJmGyaY8.png)
+
+**Евклидово расстояние** 
+![exemple Euckl](https://github.com/MixFon/N_Puzzle/blob/master/images/7zlYJYzs.png)
