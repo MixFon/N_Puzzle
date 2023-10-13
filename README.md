@@ -17,8 +17,7 @@
     * C помощью генератора головоломок (npuzzle-gen.py).
     * Самостоятельно вписывать головоломку руками при запуске программы (./puzzle) в поток ввода.
     * Cохранить головоломку в файл и передавать имя файла в качестве аргумента при запуске программы.
----
-    
+```bash
     git clone https://github.com/MixFon/N_Puzzle.git
     cd N_Puzzle/N_Puzzle
     make
@@ -28,7 +27,7 @@
     ./puzzle file_name                          # Чтение головоломки из файла file_name
     
     python2.7 npuzzle-gen.py -s 3 | ./puzzle -m # Герерирование головоломки 3x3 и передача на поток ввода ./puzzle
-
+```
 
 ### UIN_Pazzle
 Для работы в оконном режиме необходима среда разработки XCode.
@@ -37,13 +36,12 @@
 3. Переключиться в ветку UIN_Pazzle
 4. Запустить проект с помощью XCode
 5. Собрать проект
----
-
+```bash
     git clone https://github.com/MixFon/N_Puzzle.git
     cd N_Puzzle
     git checkout UIN_Pazzle
     open UIN_Pazzle.xcodeproj
-    
+ ```   
     
 **Генерирование случайной головоломки 4x4 и ее решение:**
 ![exemple one](https://github.com/MixFon/N_Puzzle/blob/master/images/Screen_Recording_2021-05-17_at_13.41.01.gif)
