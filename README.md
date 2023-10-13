@@ -59,7 +59,7 @@
 
 Для поиска решения применяется алгоритм А*. По ходу работы алгоритма строится взвешенный граф, в корне которого находится стартовое поле, а вершинами являются поля с возможными комбинациями ходом от родительского. Для каждой вершины вычисляется стоимость перехода (вес) по следующей формуле:
 
-<a href="https://www.codecogs.com/eqnedit.php?latex=\dpi{120}&space;\large&space;f(\nu&space;)=g(\nu&space;)&space;&plus;&space;h(\nu)" target="_blank"><img src="https://latex.codecogs.com/png.latex?\dpi{120}&space;\large&space;f(\nu&space;)=g(\nu&space;)&space;&plus;&space;h(\nu)" title="\large f(\nu )=g(\nu ) + h(\nu)" /></a>
+$$f(v)=g(v)+h(v)$$
 
 g(v) - количество перестановок, сделанных от стартовой вершины. (используется для жадного алгоритма)
 
@@ -69,15 +69,15 @@ h(v) - эвристическая оценка стоимости пути. Эв
 
 **Манхэттенское расстояние** 
 
-![exemple manhetten](https://github.com/MixFon/N_Puzzle/blob/master/images/fkY5DZL0.png)
+$$h(v)=\left|v.x-goal.x\right|+\left|v.y-goal.y\right|$$
 
 **Расстояние Чебышева** 
 
-![exemple cheb](https://github.com/MixFon/N_Puzzle/blob/master/images/xJmGyaY8.png)
+$$h(v)=max(\left|v.x-goal.x\right|,\left|v.y-goal.y\right|)$$
 
 **Евклидово расстояние** 
 
-![exemple Euckl](https://github.com/MixFon/N_Puzzle/blob/master/images/7zlYJYzs.png)
+$$h(v)=\sqrt{(v.x-goal.x)^2+(v.y-goal.y)^2}$$
 
 Данные функции применяются к каждому элементу поля данного состояния, все значения суммируются. Функция g(v) применяется для поиска оптимального решения и для экономии времени и ресурсов компьютера используется только для расчета поля 3x3 (для полей 4x4 и больше затрачивается достаточно много времени, выше 10 минут, и большой объем оперативной памяти, от 2 Гб и выше)
 
