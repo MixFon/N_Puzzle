@@ -9,11 +9,11 @@ import Foundation
 
 class Puzzle {
     
-    var fileName: String?
-    var heuristic: Heuristic?
-    var boardTarget: Board?
-    var board: Board?
-    var close = Set<Int>()
+    private var fileName: String?
+    private var heuristic: Heuristic?
+    private var boardTarget: Board?
+    private var board: Board?
+    private var close = Set<Int>()
     
     func run() {
         do {
@@ -34,14 +34,14 @@ class Puzzle {
         }
     }
     
-    // MARK: Поиск решения, используя алгоритм A*
+    /// Поиск решения, используя алгоритм A*
     private func searchSolutionWithHeap() {
         let heap = Heap()
         var complexityTime = 0
         self.board!.setF(heuristic: self.heuristic!.getHeuristic(coordinats: self.board!.coordinats, coordinatsTarget: self.boardTarget!.coordinats))
         heap.push(board: self.board!)
         while !heap.isEmpty() {
-            let board =  heap.pop()
+            let board = heap.pop()
             if board == self.boardTarget! {
                 printPath(board: board)
                 print("Complexity in time:", complexityTime)
@@ -59,13 +59,29 @@ class Puzzle {
         }
         print("The Pazzle has no solution.")
     }
+
+    /// Возвращает список смежных состояний.
+    private func getChildrens(neighbors: [Int16], board: Board) -> [Board] {
+        var childrens = [Board]()
+        for number in neighbors {
+            let newBoard = Board(board: board)
+            newBoard.swapNumber(number: number)
+            let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
+            newBoard.setF(heuristic: heuristic)
+            if !self.close.contains(newBoard.matrix.hashValue) {
+                childrens.append(newBoard)
+            }
+        }
+        return childrens
+    }
     
-    // MARK: Проверяет существет ли решение головоломки.
+    
+    /// Проверяет существет ли решение головоломки.
     private func checkSolution() throws {
         let summa = getSummInversion(matrix: self.board!.matrix)
         let summaTarget = getSummInversion(matrix: self.boardTarget!.matrix)
-        let coordinateZeroBoard = Int(self.board!.coordinats[0]!.0) + summa + 1
-        let coordinateZeroBoardTarget = Int(self.boardTarget!.coordinats[0]!.0) + summaTarget + 1
+        let coordinateZeroBoard = Int(self.board!.coordinats[0]!.x) + summa + 1
+        let coordinateZeroBoardTarget = Int(self.boardTarget!.coordinats[0]!.x) + summaTarget + 1
         if board!.size % 2 == 0 {
             print("Invariants: ", coordinateZeroBoard, coordinateZeroBoardTarget)
             if coordinateZeroBoard % 2 != coordinateZeroBoardTarget % 2 {
@@ -79,7 +95,7 @@ class Puzzle {
         }
     }
     
-    // MARK: Возвращает количество инвариантов.
+    /// Возвращает количество инвариантов.
     private func getSummInversion(matrix: [[Int16]]) -> Int {
         var summ = 0
         var arry = [Int16]()
@@ -108,29 +124,7 @@ class Puzzle {
         }
     }
     
-    // MARK: Возвращает список смежных состояний.
-    private func getChildrens(neighbors: [Int16], board: Board) -> [Board] {
-        var childrens = [Board]()
-        for number in neighbors {
-            let newBoard = Board(board: board)
-            newBoard.swapNumber(number: number)
-            let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
-            newBoard.setF(heuristic: heuristic)
-            if !self.close.contains(newBoard.matrix.hashValue) {
-                childrens.append(newBoard)
-            }
-        }
-        return childrens
-    }
-    
-    // MARK: Проверяет не находится ли номер на своем месте.
-    private func isLocal(number: Int16, board: Board) -> Bool {
-        let coordinatsNumber = board.getCoordinatsNumber(number: number)
-        let coordinatsTarget = self.boardTarget!.getCoordinatsNumber(number: number)
-        return coordinatsNumber == coordinatsTarget
-    }
-    
-    // MARK: Создает начальное состояние пазлов на основе считанных данных.
+    /// Создает начальное состояние пазлов на основе считанных данных.
     private func creationBouard(text: String) throws {
         let lines = text.split() { $0 == "\n" }.map{ String($0) }
         var size: Int?
@@ -161,7 +155,7 @@ class Puzzle {
         self.boardTarget = boardTarget
     }
     
-    // Создает на основе строки массив целочисленных элементов.
+    /// Создает на основе строки массив целочисленных элементов.
     private func getWords(data: String) throws -> [Int16] {
         let words = data.split() { $0 == " "}.map { String($0) }
         if words.isEmpty {
@@ -177,7 +171,7 @@ class Puzzle {
         return numbers
     }
     
-    // MARK: Возвращает строку без комментария.
+    /// Возвращает строку без комментария.
     private func getData(line: String) -> String {
         var data = String()
         for char in line {
@@ -190,7 +184,7 @@ class Puzzle {
         return data
     }
     
-    // MARK: Обработка аргументов.
+    /// Обработка аргументов.
     private func workingArguments() throws {
         for argument in CommandLine.arguments[1...] {
             guard let firstCaracter = argument.first else { continue }
@@ -220,23 +214,22 @@ class Puzzle {
         }
     }
     
-    // MARK: Вывод сообщения об ошибке в поток ошибок
+    /// Вывод сообщения об ошибке в поток ошибок
     private func systemError(massage: String) {
         fputs(massage + "\n", stderr)
         exit(-1)
     }
     
-    // MARK: Чтение файла из стандарного потока ввода.
+    /// Чтение файла из стандарного потока ввода.
     private func readOutput() -> String {
         var text = String()
-        while true {
-            guard let line = readLine() else { break }
+        while let line = readLine() {
             text.append("\(line)\n")
         }
         return text
     }
     
-    // MARK: Чтение файла из файла.
+    /// Чтение файла из файла.
     private func readFile(fileName: String) throws -> String {
         let manager = FileManager.default
         let currentDirURL = URL(fileURLWithPath: manager.currentDirectoryPath)

@@ -7,15 +7,20 @@
 
 import Foundation
 
-class Board: Equatable {
-    var size: Int
-    var matrix: [[Int16]]
-    var coordinats = [Int16: (Int8, Int8)]()
-    var f: Int
-    var g: Int
-    var parent: Board?
+struct BoardPoint: Equatable {
+	let x: Int8
+	let y: Int8
+}
+
+final class Board: Equatable {
+	var size: Int
+	var matrix: [[Int16]]
+	var coordinats = [Int16: BoardPoint]()
+	var f: Int
+	var g: Int
+	var parent: Board?
     
-    // MARK: Создание доски на основе матрицы и размера
+    /// Создание доски на основе матрицы и размера
     init(size: Int, matrix: [[Int16]]) throws {
         self.size = size
         self.matrix = matrix
@@ -25,17 +30,17 @@ class Board: Equatable {
         getCoordinats()
     }
     
-    // MARK: Создание доски-решения.
+    /// Создание доски-решения.
     init(size: Int) {
         self.size = size
         self.matrix = Array(repeating: Array(repeating: 0, count: size), count: size)
         self.f = 0
         self.g = 0
-        fillBoard()
+        fillBoardInSpiral()
         getCoordinats()
     }
     
-    // MARK: Конструктор копирования.
+    /// Конструктор копирования.
     init(board: Board) {
         self.size = board.size
         self.matrix = board.matrix
@@ -45,7 +50,7 @@ class Board: Equatable {
         self.coordinats = board.coordinats
     }
     
-    // MARK: Устанавливает значение f
+    /// Устанавливает значение f
     func setF(heuristic: Int) {
         if self.size == 3 {
             self.f = self.g + heuristic
@@ -54,35 +59,34 @@ class Board: Equatable {
         }
     }
     
-    // MARK: Возвращает координаты ячейки с номером.
-    func getCoordinatsNumber(number: Int16) -> (Int8, Int8) {
-        guard let coordinats = self.coordinats[number] else { return (Int8.max, Int8.max) }
-        return coordinats
+    /// Возвращает координаты ячейки с номером.
+    func getCoordinatsNumber(number: Int16) -> BoardPoint? {
+        return self.coordinats[number]
     }
     
-    // MARK: Возвращает номера соседних ячеек.
+    /// Возвращает номера соседних ячеек.
     func getNeighbors(number: Int16) -> [Int16] {
         var result = [Int16]()
         guard let coordinats = self.coordinats[number] else {
             return []
         }
-        if coordinats.1 - 1 >= 0 {
-            result.append(matrix[Int(coordinats.0)][Int(coordinats.1) - 1])
+        if coordinats.y - 1 >= 0 {
+            result.append(matrix[Int(coordinats.x)][Int(coordinats.y) - 1])
         }
-        if coordinats.0 - 1 >= 0 {
-            result.append(matrix[Int(coordinats.0) - 1][Int(coordinats.1)])
+        if coordinats.x - 1 >= 0 {
+            result.append(matrix[Int(coordinats.x) - 1][Int(coordinats.y)])
         }
-        if coordinats.1 + 1 < self.size {
-            result.append(matrix[Int(coordinats.0)][Int(coordinats.1) + 1])
+        if coordinats.y + 1 < self.size {
+            result.append(matrix[Int(coordinats.x)][Int(coordinats.y) + 1])
         }
-        if coordinats.0 + 1 < self.size {
-            result.append(matrix[Int(coordinats.0) + 1][Int(coordinats.1)])
+        if coordinats.x + 1 < self.size {
+            result.append(matrix[Int(coordinats.x) + 1][Int(coordinats.y)])
         }
         return result
     }
     
-    // MARK: Заполняет доску по спирали.
-    private func fillBoard() {
+    /// Заполняет доску по спирали.
+    private func fillBoardInSpiral() {
         var filler: Int16 = 1
         for i in 0..<self.size {
             self.matrix[0][i] = filler
@@ -107,7 +111,7 @@ class Board: Equatable {
         fillSquare(filler: filler)
     }
     
-    // MARK: Заполняет внутренюю часть квадрата.
+    /// Заполняет внутренюю часть квадрата.
     private func fillSquare(filler: Int16) {
         var filler = filler
         let end = self.size * self.size
@@ -137,7 +141,7 @@ class Board: Equatable {
         }
     }
     
-    // MARK: Производит проверку доски. Элементы должны быть уникальны.
+    /// Производит проверку доски. Элементы должны быть уникальны.
     private func checkBoard() throws {
         let elements = Set<Int>(0...(self.size * self.size - 1))
         var elementsBoard = Set<Int>()
@@ -151,7 +155,7 @@ class Board: Equatable {
         }
     }
     
-    // MARK: Печатает доску.
+    /// Печатает доску.
     func print() {
         Swift.print("State: ", self.g)
         Swift.print("Weight:", self.f)
@@ -165,21 +169,21 @@ class Board: Equatable {
         Swift.print()
     }
     
-    // MARK: Возврат словаря с координатами ячеек. Используется с для матрицы содержащей ответ.
+    /// Возврат словаря с координатами ячеек. Используется с для матрицы содержащей ответ.
     private func getCoordinats() {
         for (i, row) in self.matrix.enumerated() {
             for (j, element) in row.enumerated() {
-                self.coordinats[element] = (Int8(i), Int8(j))
+                self.coordinats[element] = BoardPoint(x: Int8(i), y: Int8(j))
             }
         }
     }
     
-    // MARK: Меняет местами номер и пустую клетку местами.
+    /// Меняет местами номер и пустую клетку местами.
     func swapNumber(number: Int16) {
-        let coordinatsNumber = getCoordinatsNumber(number: number)
-        let coordinatsZero = getCoordinatsNumber(number: 0)
-        self.matrix[Int(coordinatsNumber.0)][Int(coordinatsNumber.1)] = 0
-        self.matrix[Int(coordinatsZero.0)][Int(coordinatsZero.1)] = number
+		guard let coordinatsNumber = getCoordinatsNumber(number: number) else { return }
+		guard let coordinatsZero = getCoordinatsNumber(number: 0) else { return }
+        self.matrix[Int(coordinatsNumber.x)][Int(coordinatsNumber.y)] = 0
+        self.matrix[Int(coordinatsZero.x)][Int(coordinatsZero.y)] = number
         self.coordinats[number] = coordinatsZero
         self.coordinats[0] = coordinatsNumber
     }
