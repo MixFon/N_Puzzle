@@ -26,8 +26,8 @@ final class Board: Equatable {
         self.matrix = matrix
         self.f = 0
         self.g = 0
-        try checkBoard()
-        getCoordinats()
+        try checkMatrix()
+        setCoordinats()
     }
     
     /// Создание доски-решения.
@@ -37,7 +37,7 @@ final class Board: Equatable {
         self.f = 0
         self.g = 0
         fillBoardInSpiral()
-        getCoordinats()
+        setCoordinats()
     }
     
     /// Конструктор копирования.
@@ -64,12 +64,10 @@ final class Board: Equatable {
         return self.coordinats[number]
     }
     
-    /// Возвращает номера соседних ячеек.
-    func getNeighbors(number: Int16) -> [Int16] {
+    /// Возвращает номера соседних ячеек с нулевой.
+    private func getNeighbors() -> [Int16] {
         var result = [Int16]()
-        guard let coordinats = self.coordinats[number] else {
-            return []
-        }
+        guard let coordinats = self.coordinats[0] else { return [] }
         if coordinats.y - 1 >= 0 {
             result.append(matrix[Int(coordinats.x)][Int(coordinats.y) - 1])
         }
@@ -84,6 +82,18 @@ final class Board: Equatable {
         }
         return result
     }
+	
+	/// Возвращает список смежных состояний. Состояний, в которые можно перейти
+	func getChildrens() -> [Board] {
+		let neighbors = getNeighbors()
+		var childrens = [Board]()
+		for number in neighbors {
+			let newBoard = Board(board: self)
+			newBoard.swapNumber(number: number)
+			childrens.append(newBoard)
+		}
+		return childrens
+	}
     
     /// Заполняет доску по спирали.
     private func fillBoardInSpiral() {
@@ -140,10 +150,31 @@ final class Board: Equatable {
             }
         }
     }
+	
+	/// Возвращает количество инвариантов.
+	func getSummInversion() -> Int {
+		var summ = 0
+		var arry = [Int16]()
+		for row in self.matrix {
+			for elem in row {
+				if elem != 0 {
+					arry.append(elem)
+				}
+			}
+		}
+		for (i, elem) in arry.enumerated() {
+			for elemIter in arry[(i+1)...] {
+				if elem > elemIter {
+					summ += 1
+				}
+			}
+		}
+		return summ
+	}
     
     /// Производит проверку доски. Элементы должны быть уникальны.
-    private func checkBoard() throws {
-        let elements = Set<Int>(0...(self.size * self.size - 1))
+    private func checkMatrix() throws {
+        let elements = Set<Int>(0..<(self.size * self.size))
         var elementsBoard = Set<Int>()
         for row in matrix {
             for elem in row {
@@ -170,7 +201,7 @@ final class Board: Equatable {
     }
     
     /// Возврат словаря с координатами ячеек. Используется с для матрицы содержащей ответ.
-    private func getCoordinats() {
+    private func setCoordinats() {
         for (i, row) in self.matrix.enumerated() {
             for (j, element) in row.enumerated() {
                 self.coordinats[element] = BoardPoint(x: Int8(i), y: Int8(j))

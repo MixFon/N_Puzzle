@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Puzzle {
+final class Puzzle {
     
     private var fileName: String?
     private var heuristic: Heuristic?
@@ -49,37 +49,24 @@ class Puzzle {
                 print("States to solution:", board.g)
                 return
             }
-            let neighbors = board.getNeighbors(number: 0)
-            let children = getChildrens(neighbors: neighbors, board: board)
+			let children = board.getChildrens()
             for board in children {
-                heap.push(board: board)
-                complexityTime += 1
+				if !self.close.contains(board.matrix.hashValue) {
+					let heuristic = self.heuristic!.getHeuristic(coordinats: board.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
+					board.setF(heuristic: heuristic)
+					heap.push(board: board)
+					complexityTime += 1
+				}
             }
             self.close.insert(board.matrix.hashValue)
         }
         print("The Pazzle has no solution.")
     }
-
-    /// Возвращает список смежных состояний.
-    private func getChildrens(neighbors: [Int16], board: Board) -> [Board] {
-        var childrens = [Board]()
-        for number in neighbors {
-            let newBoard = Board(board: board)
-            newBoard.swapNumber(number: number)
-            let heuristic = self.heuristic!.getHeuristic(coordinats: newBoard.coordinats, coordinatsTarget: self.boardTarget!.coordinats)
-            newBoard.setF(heuristic: heuristic)
-            if !self.close.contains(newBoard.matrix.hashValue) {
-                childrens.append(newBoard)
-            }
-        }
-        return childrens
-    }
-    
     
     /// Проверяет существет ли решение головоломки.
     private func checkSolution() throws {
-        let summa = getSummInversion(matrix: self.board!.matrix)
-        let summaTarget = getSummInversion(matrix: self.boardTarget!.matrix)
+		let summa = self.board!.getSummInversion()
+		let summaTarget = self.boardTarget!.getSummInversion()
         let coordinateZeroBoard = Int(self.board!.coordinats[0]!.x) + summa + 1
         let coordinateZeroBoardTarget = Int(self.boardTarget!.coordinats[0]!.x) + summaTarget + 1
         if board!.size % 2 == 0 {
@@ -93,27 +80,6 @@ class Puzzle {
                 throw Exception(massage: "The Pazzle has no solution.")
             }
         }
-    }
-    
-    /// Возвращает количество инвариантов.
-    private func getSummInversion(matrix: [[Int16]]) -> Int {
-        var summ = 0
-        var arry = [Int16]()
-        for row in matrix {
-            for elem in row {
-                if elem != 0 {
-                    arry.append(elem)
-                }
-            }
-        }
-        for (i, elem) in arry.enumerated() {
-            for elemIter in arry[(i+1)...] {
-                if elem > elemIter {
-                    summ += 1
-                }
-            }
-        }
-        return summ
     }
     
     private func printPath(board: Board) {
